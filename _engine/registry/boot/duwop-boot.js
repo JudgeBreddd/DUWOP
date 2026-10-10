@@ -18,11 +18,16 @@
     if (look.family !== undefined) html.style.setProperty("--app-font", look.family ? `"${look.family}"` : "system-ui");
     if (look.adjust) html.style.setProperty("--app-font-adjust", String(look.adjust));
     for (const [k, v] of Object.entries(look.vars || {})) html.style.setProperty(k, v);
-    if (look.url) {
+    if (look.display) html.style.setProperty("--app-display", `"${look.display}"`);
+    for (const [id, href] of [
+      ["app-font", look.url],
+      ["app-display-font", look.displayUrl],
+    ]) {
+      if (!href) continue;
       const link = document.createElement("link");
-      link.id = "app-font";
+      link.id = id;
       link.rel = "stylesheet";
-      link.href = look.url;
+      link.href = href;
       document.head.append(link);
     }
   } catch {

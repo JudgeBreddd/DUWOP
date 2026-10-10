@@ -7,7 +7,17 @@ import { Dices } from "lucide-react";
 import { type CSSProperties, type ReactNode, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
-import { allowedThemes, applyLook, effects, fonts, type Look, loadLook, paletteVars, rollPalette } from "@/lib/theme";
+import {
+  allowedThemes,
+  applyLook,
+  effects,
+  fonts,
+  type Look,
+  loadLook,
+  lookForTheme,
+  paletteVars,
+  rollPalette,
+} from "@/lib/theme";
 import { cn } from "@/lib/utils";
 
 export function Appearance({
@@ -30,10 +40,6 @@ export function Appearance({
   };
   const toggle = (id: string, on: boolean) =>
     change({ effects: on ? [...look.effects, id] : look.effects.filter((e) => e !== id) });
-  // The picked theme's suggested font and effects, when they aren't all on yet.
-  const missing =
-    theme &&
-    ((theme.font && theme.font !== look.font) || theme.effects?.some((e) => !look.effects.includes(e)));
   const hasBackdrop = look.effects.includes("ambient") || look.effects.includes("horizon");
 
   return (
@@ -45,7 +51,13 @@ export function Appearance({
             <button
               key={t.id}
               type="button"
-              onClick={() => change({ theme: t.id, palette: t.id === "custom" ? (look.palette ?? rollPalette()) : look.palette })}
+              // A theme brings its own font and effects; they can still be changed below.
+              onClick={() =>
+                change({
+                  ...lookForTheme(t.id, look),
+                  palette: t.id === "custom" ? (look.palette ?? rollPalette()) : look.palette,
+                })
+              }
               aria-pressed={look.theme === t.id}
               // The preview carries the theme itself (and AMOLED), so it shows the real colours.
               data-theme={t.id}
@@ -77,20 +89,9 @@ export function Appearance({
             <Dices className="size-4" aria-hidden /> Roll again
           </button>
         )}
-        {missing && (
-          <p className="text-sm text-muted-foreground">
-            {theme.name} looks best with its own font and effects.{" "}
-            <button
-              type="button"
-              className="font-medium text-primary underline-offset-4 hover:underline"
-              onClick={() =>
-                change({ font: theme.font ?? look.font, effects: [...new Set([...look.effects, ...(theme.effects ?? [])])] })
-              }
-            >
-              Use them
-            </button>
-          </p>
-        )}
+        <p className="text-sm text-muted-foreground">
+          Picking a theme also sets its own font and effects. You can change them below.
+        </p>
         <label htmlFor="duwop-amoled" className="flex items-center gap-3 pt-2 text-sm">
           <Switch
             id="duwop-amoled"
