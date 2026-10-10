@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "boot",
+  "title": "DUWOP boot script",
+  "description": "Applies the saved look before first paint (no flash). Vite: add the script tag to index.html.",
+  "files": [
+    {
+      "path": "_engine/registry/boot/duwop-boot.js",
+      "content": "// DUWOP boot (@duwop/boot). Puts the saved look on <html> before the page paints, so there's no flash of\n// the wrong theme. Must load as a plain blocking script in <head> (not type=\"module\", not async/defer).\n//   Vite:  <script src=\"/duwop-boot.js\" data-key=\"duwop-look\"></script> in index.html\n//   Astro: <DuwopBoot /> in the layout's <head> (it adds this script with the app's config)\n// data-key is the app's storageKey; data-default (optional) is the look for first-time visitors.\n// It reads the copy lib/theme.ts applyLook saves, which already carries everything needed to paint.\n(() => {\n  const me = document.currentScript;\n  try {\n    const key = (me && me.dataset.key) || \"duwop-look\";\n    const look = JSON.parse(localStorage.getItem(key) || (me && me.dataset.default) || \"null\");\n    if (!look || !look.theme) return;\n    const html = document.documentElement;\n    html.dataset.theme = look.theme;\n    html.dataset.fx = (look.effects || []).join(\" \");\n    html.classList.toggle(\"dark\", look.dark !== false);\n    html.toggleAttribute(\"data-amoled\", !!look.amoled);\n    if (look.family !== undefined) html.style.setProperty(\"--app-font\", look.family ? `\"${look.family}\"` : \"system-ui\");\n    if (look.adjust) html.style.setProperty(\"--app-font-adjust\", String(look.adjust));\n    for (const [k, v] of Object.entries(look.vars || {})) html.style.setProperty(k, v);\n    if (look.url) {\n      const link = document.createElement(\"link\");\n      link.id = \"app-font\";\n      link.rel = \"stylesheet\";\n      link.href = look.url;\n      document.head.append(link);\n    }\n  } catch {\n    // Storage blocked or bad JSON: the app applies its default once it loads.\n  }\n})();\n",
+      "type": "registry:file",
+      "target": "~/public/duwop-boot.js"
+    }
+  ],
+  "type": "registry:item"
+}

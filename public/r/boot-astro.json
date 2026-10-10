@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "boot-astro",
+  "title": "DUWOP boot for Astro",
+  "description": "The boot script as an Astro component: put <DuwopBoot /> in the layout head.",
+  "registryDependencies": [
+    "@duwop/boot",
+    "@duwop/theme"
+  ],
+  "files": [
+    {
+      "path": "_engine/registry/boot/DuwopBoot.astro",
+      "content": "---\n// DUWOP boot for Astro (@duwop/boot). Put <DuwopBoot /> in the layout's <head>, before any stylesheet\n// links, so the saved look (or this app's default) is on <html> before the first paint.\nimport { duwopConfig } from \"@/lib/duwop-config\";\nimport { fonts, themes } from \"@/lib/theme\";\n\nconst d = duwopConfig.defaultLook;\nconst font = fonts.find((f) => f.id === d.font) ?? fonts[0];\nconst fallback = JSON.stringify({\n  ...d,\n  dark: themes.find((t) => t.id === d.theme)?.dark ?? true,\n  family: font.family,\n  adjust: font.adjust,\n  url: font.family\n    ? `https://fonts.googleapis.com/css2?family=${encodeURIComponent(font.family)}:wght@400;500;600;700&display=swap`\n    : \"\",\n});\n---\n\n<script is:inline src=\"/duwop-boot.js\" data-key={duwopConfig.storageKey} data-default={fallback}></script>\n",
+      "type": "registry:file",
+      "target": "src/components/DuwopBoot.astro"
+    }
+  ],
+  "type": "registry:item"
+}

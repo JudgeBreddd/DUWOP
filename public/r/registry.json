@@ -1,0 +1,98 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "duwop",
+  "homepage": "https://github.com/itsdankai/DUWOP",
+  "items": [
+    {
+      "name": "theme",
+      "type": "registry:item",
+      "title": "DUWOP theme",
+      "description": "Our shared look: 15 themes (incl. a random palette roller), AMOLED, 6 effects and 10 width-matched fonts, switched by attributes on <html>.",
+      "files": [
+        {
+          "path": "_engine/registry/theme/duwop.css",
+          "type": "registry:lib"
+        },
+        {
+          "path": "_engine/registry/theme/theme.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "_engine/registry/theme/duwop-config.ts",
+          "type": "registry:lib"
+        }
+      ],
+      "css": {
+        "@import \"@/lib/duwop.css\"": {}
+      }
+    },
+    {
+      "name": "appearance",
+      "type": "registry:component",
+      "title": "DUWOP Appearance picker",
+      "description": "Settings panel for theme, AMOLED, font and effects, with the palette dice. Shows only the themes the app allows.",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "card",
+        "switch",
+        "@duwop/theme"
+      ],
+      "files": [
+        {
+          "path": "_engine/registry/appearance/appearance.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "boot",
+      "type": "registry:item",
+      "title": "DUWOP boot script",
+      "description": "Applies the saved look before first paint (no flash). Vite: add the script tag to index.html.",
+      "files": [
+        {
+          "path": "_engine/registry/boot/duwop-boot.js",
+          "type": "registry:file",
+          "target": "~/public/duwop-boot.js"
+        }
+      ]
+    },
+    {
+      "name": "boot-astro",
+      "type": "registry:item",
+      "title": "DUWOP boot for Astro",
+      "description": "The boot script as an Astro component: put <DuwopBoot /> in the layout head.",
+      "registryDependencies": [
+        "@duwop/boot",
+        "@duwop/theme"
+      ],
+      "files": [
+        {
+          "path": "_engine/registry/boot/DuwopBoot.astro",
+          "type": "registry:file",
+          "target": "src/components/DuwopBoot.astro"
+        }
+      ]
+    },
+    {
+      "name": "design-docs",
+      "type": "registry:item",
+      "title": "DUWOP design docs",
+      "description": "Starter PRODUCT.md and DESIGN.md for Impeccable, pointing at DUWOP tokens.",
+      "files": [
+        {
+          "path": "_engine/registry/design-docs/PRODUCT.md",
+          "type": "registry:file",
+          "target": "~/PRODUCT.md"
+        },
+        {
+          "path": "_engine/registry/design-docs/DESIGN.md",
+          "type": "registry:file",
+          "target": "~/DESIGN.md"
+        }
+      ]
+    }
+  ]
+}

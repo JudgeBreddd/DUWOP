@@ -1,0 +1,11 @@
+{
+  "name": "duwop",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "build": "shadcn build"
+  },
+  "devDependencies": {
+    "shadcn": "^4.21.4"
+  }
+}
