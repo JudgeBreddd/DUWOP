@@ -77,6 +77,21 @@
       ]
     },
     {
+      "name": "popcorn",
+      "type": "registry:component",
+      "title": "DUWOP popcorn rain",
+      "description": "Opt-in effect: popcorn drifting down behind the page. Add <PopcornRain /> to the layout and a 'popcorn' entry to extraEffects in duwop-config.",
+      "registryDependencies": [
+        "@duwop/theme"
+      ],
+      "files": [
+        {
+          "path": "_engine/registry/popcorn/popcorn.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
       "name": "design-docs",
       "type": "registry:item",
       "title": "DUWOP design docs",

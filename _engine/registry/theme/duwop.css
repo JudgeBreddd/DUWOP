@@ -67,8 +67,8 @@ body {
   --ring: oklch(0.52 0.13 70);
 }
 
-/* Trove: gold on deep ink. The original dark look. */
-.dark[data-theme="trove"] {
+/* Duskwood: gold on deep ink. The house look and every app's default (named for DUWOP; was "Trove" until 2026-10-10). */
+.dark[data-theme="duskwood"] {
   --background: oklch(0.16 0.015 270);
   --foreground: oklch(0.95 0.01 85);
   --card: oklch(0.2 0.018 270);
@@ -92,7 +92,7 @@ body {
 
 /* ---- Dark themes. Each one only picks a hue and chroma for its neutrals (--nh, --nc) and an accent;
    this shared rule builds the rest, so they stay balanced. ---- */
-.dark[data-theme]:not([data-theme="trove"]) {
+.dark[data-theme]:not([data-theme="duskwood"]) {
   --background: oklch(0.155 var(--nc) var(--nh));
   --foreground: oklch(0.96 calc(var(--nc) * 0.4) var(--nh));
   --card: oklch(0.195 var(--nc) var(--nh));
@@ -235,7 +235,7 @@ body {
    Builder: "we shouldn't dim it down, we should do more the opposite"; 8-bit and ASCII should look like pixel art
    and a text terminal. Apps opt elements in with classes they already use:
      .fx-title   a page title (gets the theme's title treatment and display font)
-     .fx-lift    a card or poster (frames, cut corners)
+     .fx-lift    a card or image tile (frames, cut corners)
      .fx-meter   a thin progress bar's track, its fill the only child (shadcn's Progress is picked up by data-slot)
    Everything here is static (no per-frame repaint) except the ASCII cursor blink, which only changes opacity. */
 
@@ -260,8 +260,8 @@ body {
   border-color: color-mix(in oklch, var(--primary) 22%, var(--border));
 }
 
-/* Trove: a treasure-gold title, light catching the top edge. */
-.dark[data-theme="trove"]:not([data-fx~="neon"]) .fx-title {
+/* Duskwood: a gold title, light catching the top edge. */
+.dark[data-theme="duskwood"]:not([data-fx~="neon"]) .fx-title {
   background: linear-gradient(180deg, oklch(0.95 0.08 95) 0%, var(--primary) 52%, oklch(0.62 0.13 65) 100%);
   -webkit-background-clip: text;
   background-clip: text;
@@ -271,10 +271,6 @@ body {
 /* Synthwave: hot pink into cyan, with a pink haze behind. */
 .dark[data-theme="synthwave"]:not([data-fx~="neon"]) .fx-title {
   filter: drop-shadow(0 0 12px color-mix(in oklch, var(--primary) 55%, transparent));
-}
-.dark[data-theme="synthwave"] [data-slot="card"] {
-  box-shadow: 0 0 0 1px color-mix(in oklch, var(--primary) 30%, transparent),
-    0 12px 32px -18px color-mix(in oklch, var(--glow2) 70%, transparent);
 }
 
 /* Outrun: chrome-and-sunset arcade title, italic and wide; cards sit on a neon strip. */
@@ -295,7 +291,7 @@ body {
   border-bottom: 2px solid var(--glow2);
 }
 
-/* Cyberpunk: glitched, upper-case titles; hazard stripes on cards; cut corners on buttons and posters. */
+/* Cyberpunk: glitched, upper-case titles; hazard stripes on cards; cut corners on buttons and image tiles. */
 .dark[data-theme="cyberpunk"] .fx-title {
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -327,7 +323,7 @@ body {
 }
 
 /* 8-bit: an arcade title font with a hard pixel shadow; notched pixel frames and drop shadows on cards, buttons,
-   inputs, badges and posters; posters drawn with hard pixels; segmented bars; a faint dither on the page. */
+   inputs, badges and image tiles; their images drawn with hard pixels; segmented bars; a faint dither on the page. */
 .dark[data-theme="8bit"] .fx-title {
   font-size: 1.25rem;
   line-height: 1.6;
@@ -377,8 +373,8 @@ body {
 }
 
 /* ASCII: a green phosphor terminal. Double-line boxes, [ bracketed ] buttons and tags, a prompt and a blinking
-   cursor on titles, glowing text and scanlines over everything. Posters keep their own colours (builder 2026-10-10: green posters
-   were too much). */
+   cursor on titles, glowing text and scanlines over everything. Images keep their own colours (builder 2026-10-10: green-tinted
+   images were too much). */
 [data-theme="ascii"] {
   font-variant-ligatures: none;
 }
@@ -456,23 +452,28 @@ body {
 }
 
 /* ---- Effects: words in data-fx. Apps opt elements in with these classes:
-   .fx-lift      a card or poster that lifts and glows (Underglow) and gets a sheen (Shine)
+   .fx-lift      a card or image tile that lifts and glows (Underglow) and gets a sheen (Shine)
    .fx-ambient   a <div> near the top of <body>: the backdrop for Ambient, Drifting and Horizon. Put one
                  empty <div class="fx-horizon"> inside it for Horizon (2026-10-10)
    .fx-neon      a heading or logo that glows like a neon tube (Neon)
    .fx-title     a page title: each theme's title look and display font (see Personalities)
    .fx-meter     a thin progress bar's track (its fill the only child); shadcn Progress needs nothing ---- */
 
-/* Underglow: cards lift and glow in the theme's colour on hover. */
-[data-fx~="underglow"] .fx-lift {
+/* Underglow: cards and image tiles glow in the theme's colour on hover, the same in every theme (2026-10-10:
+   no theme glows all the time). 8-bit's frame is itself a box-shadow, so there the frame lights up instead. */
+[data-fx~="underglow"] :is(.fx-lift, [data-slot="card"]) {
   transition:
     transform 0.2s ease,
     box-shadow 0.25s ease;
 }
-[data-fx~="underglow"] :is(.fx-lift:hover, .group:hover .fx-lift, .fx-lift:focus-visible, .group:focus-visible .fx-lift) {
+[data-fx~="underglow"]:not([data-theme="8bit"])
+  :is(.fx-lift:hover, .group:hover .fx-lift, .fx-lift:focus-visible, .group:focus-visible .fx-lift, [data-slot="card"]:hover) {
   box-shadow:
     0 20px 38px -14px color-mix(in oklch, var(--glow) 75%, transparent),
     0 0 0 1px color-mix(in oklch, var(--glow) 50%, transparent);
+}
+[data-fx~="underglow"][data-theme="8bit"] :is([data-slot="card"]:hover, .fx-lift:hover > *, .group:hover .fx-lift > *) {
+  --frame: var(--glow);
 }
 
 /* The backdrop. ::before is the Ambient wash; the Horizon grid is the .fx-horizon child. */

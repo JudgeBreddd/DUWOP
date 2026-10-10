@@ -11,7 +11,8 @@
     const look = JSON.parse(localStorage.getItem(key) || (me && me.dataset.default) || "null");
     if (!look || !look.theme) return;
     const html = document.documentElement;
-    html.dataset.theme = look.theme;
+    // Renamed themes (lib/theme.ts renamedThemes): old saved ids still paint the right theme.
+    html.dataset.theme = { trove: "duskwood" }[look.theme] || look.theme;
     html.dataset.fx = (look.effects || []).join(" ");
     html.classList.toggle("dark", look.dark !== false);
     html.toggleAttribute("data-amoled", !!look.amoled);
