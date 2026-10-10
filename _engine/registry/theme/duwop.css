@@ -304,10 +304,12 @@ body {
 [data-fx~="ambient"] .fx-ambient::before {
   content: "";
   position: absolute;
-  inset: -20%;
+  /* Screen-sized, not oversized: about half the area to blend on every scroll frame (2026-10-10). The glows
+     fade to nothing well inside the edges, so the drift never shows a border. */
+  inset: 0;
   background:
-    radial-gradient(38% 32% at 18% 12%, color-mix(in oklch, var(--glow) 16%, transparent), transparent 70%),
-    radial-gradient(34% 30% at 82% 88%, color-mix(in oklch, var(--glow2) 13%, transparent), transparent 70%);
+    radial-gradient(53% 45% at 5% -3%, color-mix(in oklch, var(--glow) 16%, transparent), transparent 70%),
+    radial-gradient(48% 42% at 95% 103%, color-mix(in oklch, var(--glow2) 13%, transparent), transparent 70%);
 }
 /* Drifting glow: the ambient wash slowly moves (only for people who haven't asked for less motion). */
 @media (prefers-reduced-motion: no-preference) {
