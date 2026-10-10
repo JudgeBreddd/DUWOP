@@ -1,0 +1,33 @@
+#!/bin/sh
+# pre-push guard for DUWOP (public repo). Refuses the push when any file in the pushed commits is
+# (1) outside the path allowlist, (2) an image/binary by magic bytes, or (3) larger than the size cap.
+# Arm once per clone: sh .githooks/install-hooks.sh
+# Policy: Workspace/_system/private-data-policy.md ("The second layer: a pre-push hook").
+
+MAX_BYTES=1000000
+ALLOW='^(README\.md|LICENSE|\.gitignore|\.gitattributes|package\.json|package-lock\.json|registry\.json|\.githooks/.*|_engine/registry/.*|public/r/.*|\.github/.*)$'
+zero=0000000000000000000000000000000000000000
+fail=0
+
+while read -r local_ref local_sha remote_ref remote_sha; do
+  [ "$local_sha" = "$zero" ] && continue
+  if [ "$remote_sha" = "$zero" ] || ! git cat-file -e "$remote_sha" 2>/dev/null; then
+    files=$(git ls-tree -r --name-only "$local_sha")
+  else
+    files=$(git diff --name-only --diff-filter=ACMR "$remote_sha" "$local_sha")
+  fi
+  for f in $files; do
+    [ -z "$f" ] && continue
+    if ! echo "$f" | grep -Eq "$ALLOW"; then echo "pre-push: path not allowlisted: $f" >&2; fail=1; continue; fi
+    size=$(git cat-file -s "$local_sha:$f" 2>/dev/null || echo 0)
+    if [ "$size" -gt "$MAX_BYTES" ]; then echo "pre-push: over size cap ($size bytes): $f" >&2; fail=1; fi
+    magic=$(git cat-file -p "$local_sha:$f" 2>/dev/null | head -c 8 | od -An -tx1 | tr -d ' \n')
+    case "$magic" in
+      89504e47*|ffd8ff*|47494638*|52494646*|25504446*|504b0304*)
+        echo "pre-push: binary/image file: $f" >&2; fail=1 ;;
+    esac
+  done
+done
+
+[ "$fail" -eq 0 ] || { echo "pre-push: refused. Fix the files above or widen the allowlist on purpose." >&2; exit 1; }
+exit 0

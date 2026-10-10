@@ -1,0 +1,11 @@
+node_modules/
+_private/
+CLAUDE.md
+plan.md
+saved-rounds.md
+origin/
+HANDOFF.md
+.publish
+.publishignore
+*.png
+*.env

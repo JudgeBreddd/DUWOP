@@ -1,0 +1,410 @@
+/* DUWOP theme (@duwop/theme). The shared look for every app and site we build.
+   Everything is driven by attributes on <html>, set by lib/theme.ts (applyLook):
+     data-theme="<id>"  which theme (list and notes in lib/theme.ts)
+     class="dark"       on for dark themes
+     data-amoled        true-black background on any dark theme
+     data-fx="a b"      effects, space-separated
+     --app-font         the picked font (style on <html>)
+   Selectors aren't tied to <html>, so a theme preview is just an element with the same attributes.
+   Every theme selector has two parts (e.g. .dark[data-theme="x"]) so it outranks the app's own
+   :root / .dark tokens no matter which order the CSS loads in. Don't edit this file in an app:
+   pick themes in lib/duwop-config.ts instead, so every app stays in step. */
+
+/* ---- Fonts ---- */
+@theme {
+  --font-sans: var(--app-font, "Inter"), ui-sans-serif, system-ui, sans-serif;
+}
+html,
+body {
+  font-family: var(--app-font, "Inter"), ui-sans-serif, system-ui, sans-serif;
+  /* Same text width whichever font is picked (lib/theme.ts sets the value per font). */
+  font-size-adjust: var(--app-font-adjust, none);
+}
+
+/* ---- Base ---- */
+
+/* The glow colours effects use, and the default corner radius. Each theme can override them. */
+[data-theme] {
+  --glow: var(--primary);
+  --glow2: var(--primary);
+}
+.dark[data-theme],
+[data-theme]:not(.dark) {
+  --radius: 0.75rem;
+  /* shadcn's sidebar and chart tokens follow the theme too. */
+  --sidebar: var(--card);
+  --sidebar-foreground: var(--card-foreground);
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--primary-foreground);
+  --sidebar-accent: var(--accent);
+  --sidebar-accent-foreground: var(--accent-foreground);
+  --sidebar-border: var(--border);
+  --sidebar-ring: var(--ring);
+  --chart-1: var(--primary);
+  --chart-2: var(--glow2);
+}
+
+/* Daylight: the default light theme. Primary is deep enough to read as text on paper and carry white
+   text (both 5.4:1, WCAG AA). */
+[data-theme="daylight"]:not(.dark) {
+  --background: oklch(0.985 0.004 85);
+  --foreground: oklch(0.2 0.02 270);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.2 0.02 270);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.2 0.02 270);
+  --primary: oklch(0.52 0.13 70);
+  --primary-foreground: oklch(0.99 0 0);
+  --secondary: oklch(0.95 0.008 270);
+  --secondary-foreground: oklch(0.25 0.02 270);
+  --muted: oklch(0.95 0.008 270);
+  --muted-foreground: oklch(0.5 0.02 270);
+  --accent: oklch(0.94 0.02 80);
+  --accent-foreground: oklch(0.25 0.02 270);
+  --destructive: oklch(0.58 0.22 27);
+  --border: oklch(0.9 0.01 270);
+  --input: oklch(0.9 0.01 270);
+  --ring: oklch(0.52 0.13 70);
+}
+
+/* Trove: gold on deep ink. The original dark look. */
+.dark[data-theme="trove"] {
+  --background: oklch(0.16 0.015 270);
+  --foreground: oklch(0.95 0.01 85);
+  --card: oklch(0.2 0.018 270);
+  --card-foreground: oklch(0.95 0.01 85);
+  --popover: oklch(0.2 0.018 270);
+  --popover-foreground: oklch(0.95 0.01 85);
+  --primary: oklch(0.8 0.13 80);
+  --primary-foreground: oklch(0.18 0.02 270);
+  --secondary: oklch(0.26 0.02 270);
+  --secondary-foreground: oklch(0.95 0.01 85);
+  --muted: oklch(0.24 0.018 270);
+  --muted-foreground: oklch(0.68 0.02 270);
+  --accent: oklch(0.28 0.025 270);
+  --accent-foreground: oklch(0.95 0.01 85);
+  --destructive: oklch(0.65 0.2 25);
+  --border: oklch(1 0 0 / 9%);
+  --input: oklch(1 0 0 / 14%);
+  --ring: oklch(0.8 0.13 80);
+  --glow2: oklch(0.6 0.1 280);
+}
+
+/* ---- Dark themes. Each one only picks a hue and chroma for its neutrals (--nh, --nc) and an accent;
+   this shared rule builds the rest, so they stay balanced. ---- */
+.dark[data-theme]:not([data-theme="trove"]) {
+  --background: oklch(0.155 var(--nc) var(--nh));
+  --foreground: oklch(0.96 calc(var(--nc) * 0.4) var(--nh));
+  --card: oklch(0.195 var(--nc) var(--nh));
+  --card-foreground: var(--foreground);
+  --popover: var(--card);
+  --popover-foreground: var(--foreground);
+  --secondary: oklch(0.255 var(--nc) var(--nh));
+  --secondary-foreground: var(--foreground);
+  --muted: oklch(0.235 var(--nc) var(--nh));
+  --muted-foreground: oklch(0.7 calc(var(--nc) * 0.8) var(--nh));
+  --accent: oklch(0.275 calc(var(--nc) * 1.2) var(--nh));
+  --accent-foreground: var(--foreground);
+  --primary-foreground: oklch(0.16 var(--nc) var(--nh));
+  --destructive: oklch(0.65 0.2 25);
+  --border: oklch(1 0 0 / 9%);
+  --input: oklch(1 0 0 / 14%);
+  --ring: var(--primary);
+  --glow: var(--primary);
+}
+.dark[data-theme="midnight"] {
+  --nh: 262;
+  --nc: 0.032;
+  --primary: oklch(0.72 0.17 252);
+  --glow2: oklch(0.62 0.18 290);
+}
+.dark[data-theme="ember"] {
+  --nh: 40;
+  --nc: 0.014;
+  --primary: oklch(0.72 0.18 45);
+  --glow2: oklch(0.6 0.2 25);
+}
+.dark[data-theme="forest"] {
+  --nh: 165;
+  --nc: 0.022;
+  --primary: oklch(0.76 0.15 155);
+  --glow2: oklch(0.7 0.12 120);
+}
+.dark[data-theme="synthwave"] {
+  --nh: 300;
+  --nc: 0.045;
+  --primary: oklch(0.72 0.24 345);
+  --glow2: oklch(0.8 0.14 200);
+}
+.dark[data-theme="rose"] {
+  --nh: 350;
+  --nc: 0.025;
+  --primary: oklch(0.8 0.12 5);
+  --glow2: oklch(0.7 0.13 320);
+}
+.dark[data-theme="arctic"] {
+  --nh: 230;
+  --nc: 0.022;
+  --primary: oklch(0.85 0.1 210);
+  --glow2: oklch(0.75 0.09 250);
+}
+.dark[data-theme="mono"] {
+  --nh: 0;
+  --nc: 0;
+  --primary: oklch(0.93 0 0);
+  --glow2: oklch(0.6 0 0);
+}
+
+/* Outrun: 80s/90s arcade racer and space shooter. Sunset orange over deep violet, magenta second glow.
+   Pairs with the Horizon effect. */
+.dark[data-theme="outrun"] {
+  --nh: 290;
+  --nc: 0.06;
+  --primary: oklch(0.78 0.17 55);
+  --glow2: oklch(0.65 0.26 340);
+}
+
+/* Cyberpunk: hazard yellow on near-black teal, cyan second glow, hard corners, cut-corner cards with a faint yellow outline. */
+.dark[data-theme="cyberpunk"] {
+  --nh: 200;
+  --nc: 0.03;
+  --primary: oklch(0.92 0.19 105);
+  --glow2: oklch(0.82 0.15 195);
+  --radius: 0px;
+}
+[data-theme="cyberpunk"] [data-slot="card"] {
+  clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%);
+  border-color: color-mix(in oklch, var(--primary) 35%, transparent);
+}
+
+/* 8-bit: console-cartridge colours, square corners, chunky borders and hard pixel drop-shadows.
+   Pairs with the Pixelify font. */
+.dark[data-theme="8bit"] {
+  --nh: 265;
+  --nc: 0.05;
+  --primary: oklch(0.86 0.17 95);
+  --glow2: oklch(0.7 0.19 145);
+  --border: oklch(1 0 0 / 22%);
+  --input: oklch(1 0 0 / 30%);
+  --radius: 0px;
+}
+[data-theme="8bit"] :is([data-slot="card"], [data-slot="input"], [data-slot="textarea"]) {
+  border-width: 3px;
+  box-shadow: 4px 4px 0 0 oklch(0 0 0 / 55%);
+}
+[data-theme="8bit"] [data-slot="button"] {
+  box-shadow: 3px 3px 0 0 oklch(0 0 0 / 55%);
+}
+[data-theme="8bit"] [data-slot="button"]:active {
+  translate: 3px 3px;
+  box-shadow: none;
+}
+
+/* ASCII: green phosphor terminal. Monospace, square corners, dashed borders like text-art boxes.
+   Pairs with the JetBrains Mono font. */
+.dark[data-theme="ascii"] {
+  --nh: 150;
+  --nc: 0.02;
+  --primary: oklch(0.85 0.2 145);
+  --glow2: oklch(0.7 0.15 145);
+  --border: oklch(0.85 0.2 145 / 30%);
+  --radius: 0px;
+}
+[data-theme="ascii"] {
+  font-variant-ligatures: none;
+}
+[data-theme="ascii"] :is([data-slot="card"], [data-slot="input"], [data-slot="textarea"], [data-slot="separator"]) {
+  border-style: dashed;
+}
+
+/* Custom: the random palette roller (lib/theme.ts rollPalette) sets --nh, --nc, --primary and --glow2
+   inline on <html>, which outranks these. These are only the look before the first roll. */
+.dark[data-theme="custom"] {
+  --nh: 200;
+  --nc: 0.03;
+  --primary: oklch(0.78 0.16 20);
+  --glow2: oklch(0.68 0.18 80);
+}
+
+/* ---- Light themes other than Daylight: same idea as the dark rule, light values. ---- */
+[data-theme]:not(.dark):not([data-theme="daylight"]) {
+  --background: oklch(0.975 var(--nc) var(--nh));
+  --foreground: oklch(0.24 calc(var(--nc) * 1.6) var(--nh));
+  --card: oklch(0.993 calc(var(--nc) * 0.5) var(--nh));
+  --card-foreground: var(--foreground);
+  --popover: var(--card);
+  --popover-foreground: var(--foreground);
+  --secondary: oklch(0.94 var(--nc) var(--nh));
+  --secondary-foreground: var(--foreground);
+  --muted: oklch(0.94 var(--nc) var(--nh));
+  --muted-foreground: oklch(0.48 var(--nc) var(--nh));
+  --accent: oklch(0.92 calc(var(--nc) * 1.5) var(--nh));
+  --accent-foreground: var(--foreground);
+  --primary-foreground: oklch(0.99 0 0);
+  --destructive: oklch(0.55 0.2 27);
+  --border: oklch(0.88 var(--nc) var(--nh));
+  --input: oklch(0.88 var(--nc) var(--nh));
+  --ring: var(--primary);
+  --glow: var(--primary);
+}
+
+/* Linen: organic modern / Scandi neutrals. Warm oat paper, clay accent, sage second glow, soft corners. */
+[data-theme="linen"]:not(.dark) {
+  --nh: 75;
+  --nc: 0.012;
+  --primary: oklch(0.5 0.1 45);
+  --glow2: oklch(0.62 0.06 140);
+  --radius: 1rem;
+}
+
+/* AMOLED: true black behind everything (pixels off on OLED screens), with surfaces just above black so
+   cards still read. Works on every dark theme. */
+.dark[data-theme][data-amoled] {
+  --background: oklch(0 0 0);
+  --card: oklch(0.13 var(--nc, 0.015) var(--nh, 270));
+  --popover: oklch(0.13 var(--nc, 0.015) var(--nh, 270));
+  --muted: oklch(0.17 var(--nc, 0.015) var(--nh, 270));
+  --secondary: oklch(0.2 var(--nc, 0.015) var(--nh, 270));
+  --accent: oklch(0.21 var(--nc, 0.015) var(--nh, 270));
+}
+
+/* ---- Effects: words in data-fx. Apps opt elements in with these classes:
+   .fx-lift      a card or poster that lifts and glows (Underglow) and gets a sheen (Shine)
+   .fx-ambient   one empty <div> near the top of <body>: the backdrop for Ambient, Drifting and Horizon
+   .fx-neon      a heading or logo that glows like a neon tube (Neon) ---- */
+
+/* Underglow: cards lift and glow in the theme's colour on hover. */
+[data-fx~="underglow"] .fx-lift {
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.25s ease;
+}
+[data-fx~="underglow"] :is(.fx-lift:hover, .group:hover .fx-lift, .fx-lift:focus-visible, .group:focus-visible .fx-lift) {
+  box-shadow:
+    0 20px 38px -14px color-mix(in oklch, var(--glow) 75%, transparent),
+    0 0 0 1px color-mix(in oklch, var(--glow) 50%, transparent);
+}
+
+/* The backdrop. ::before is the Ambient wash, ::after the Horizon grid. */
+.fx-ambient {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+}
+[data-fx~="ambient"] .fx-ambient,
+[data-fx~="horizon"] .fx-ambient {
+  display: block;
+}
+
+/* Ambient glow: a soft wash of the theme's two colours. */
+[data-fx~="ambient"] .fx-ambient::before {
+  content: "";
+  position: absolute;
+  inset: -20%;
+  background:
+    radial-gradient(38% 32% at 18% 12%, color-mix(in oklch, var(--glow) 16%, transparent), transparent 70%),
+    radial-gradient(34% 30% at 82% 88%, color-mix(in oklch, var(--glow2) 13%, transparent), transparent 70%);
+}
+/* Drifting glow: the ambient wash slowly moves (only for people who haven't asked for less motion). */
+@media (prefers-reduced-motion: no-preference) {
+  [data-fx~="motion"] .fx-ambient::before {
+    animation: fx-drift 45s ease-in-out infinite alternate;
+  }
+}
+@keyframes fx-drift {
+  to {
+    transform: translate(7%, -5%) rotate(10deg) scale(1.12);
+  }
+}
+
+/* Horizon: an 80s neon grid running to the horizon along the bottom of the page. Scrolls with Drifting. */
+[data-fx~="horizon"] .fx-ambient::after {
+  content: "";
+  position: absolute;
+  left: -50%;
+  right: -50%;
+  bottom: 0;
+  height: 50%;
+  --line: color-mix(in oklch, var(--glow2) 85%, transparent);
+  background:
+    repeating-linear-gradient(to right, var(--line) 0 2px, transparent 2px 64px),
+    repeating-linear-gradient(to bottom, var(--line) 0 2px, transparent 2px 64px);
+  transform: perspective(320px) rotateX(62deg);
+  transform-origin: 50% 100%;
+  mask-image: linear-gradient(to top, black 15%, transparent 90%);
+  opacity: 0.7;
+  filter: drop-shadow(0 0 4px var(--glow2));
+}
+@media (prefers-reduced-motion: no-preference) {
+  [data-fx~="horizon"][data-fx~="motion"] .fx-ambient::after {
+    animation: fx-road 1.6s linear infinite;
+  }
+}
+@keyframes fx-road {
+  to {
+    background-position: 0 64px;
+  }
+}
+
+/* Shine: a sweep of light across a card on hover. */
+[data-fx~="shine"] .fx-lift {
+  position: relative;
+  overflow: hidden;
+}
+[data-fx~="shine"] .fx-lift::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(115deg, transparent 35%, rgb(255 255 255 / 0.2) 50%, transparent 65%);
+  translate: -130% 0;
+}
+[data-fx~="shine"] :is(.fx-lift:hover, .group:hover .fx-lift)::after {
+  translate: 130% 0;
+  transition: translate 0.8s ease;
+}
+
+/* Neon: text glows like a lit neon tube in the theme's colour, and now and then flickers. */
+[data-fx~="neon"] .fx-neon {
+  color: color-mix(in oklch, var(--glow) 35%, white);
+  text-shadow:
+    0 0 2px color-mix(in oklch, var(--glow) 80%, white),
+    0 0 10px var(--glow),
+    0 0 24px var(--glow),
+    0 0 48px color-mix(in oklch, var(--glow) 60%, transparent);
+}
+@media (prefers-reduced-motion: no-preference) {
+  [data-fx~="neon"] .fx-neon {
+    animation: fx-flicker 7s linear infinite;
+  }
+}
+/* At most two quick dips every 7 seconds, never to full dark: well under the 3-flashes-a-second limit. */
+@keyframes fx-flicker {
+  0%,
+  41%,
+  43%,
+  45.5%,
+  100% {
+    opacity: 1;
+  }
+  42%,
+  44.5% {
+    opacity: 0.55;
+    text-shadow: none;
+  }
+}
+
+/* Anyone who asked their system for less motion gets none of it. The animations above only run under
+   no-preference; this turns off the hover movement too. */
+@media (prefers-reduced-motion: reduce) {
+  [data-fx] .fx-lift {
+    transition: none;
+  }
+  [data-fx] .fx-lift::after {
+    display: none;
+  }
+}
