@@ -14,6 +14,8 @@ export type Theme = {
   font?: string;
   /** Effect ids this theme looks best with. */
   effects?: string[];
+  /** A Google Fonts family for page titles (.fx-title), loaded with the theme. */
+  display?: string;
 };
 
 export const themes: Theme[] = [
@@ -40,19 +42,35 @@ export const themes: Theme[] = [
     dark: true,
     font: "chakra",
     effects: ["underglow", "neon"],
+    display: "Orbitron",
   },
   {
     id: "8bit",
     name: "8-bit",
-    note: "Cartridge colours and pixel shadows.",
+    note: "Pixel frames, arcade titles, cartridge colours.",
     dark: true,
     font: "pixelify",
     effects: ["underglow"],
+    display: "Press Start 2P",
   },
-  { id: "ascii", name: "ASCII", note: "Green phosphor terminal.", dark: true, font: "jetbrains", effects: ["neon"] },
+  {
+    id: "ascii",
+    name: "ASCII",
+    note: "Green phosphor terminal: text boxes, [ buttons ], scanlines.",
+    dark: true,
+    font: "jetbrains",
+    effects: ["neon"],
+  },
   { id: "custom", name: "Roll the dice", note: "A random palette. Roll again for another.", dark: true },
   { id: "daylight", name: "Daylight", note: "Light mode.", dark: false },
-  { id: "linen", name: "Linen", note: "Scandi neutrals: oat, clay and sage.", dark: false, font: "outfit" },
+  {
+    id: "linen",
+    name: "Linen",
+    note: "Scandi neutrals: oat, clay and sage.",
+    dark: false,
+    font: "outfit",
+    display: "Fraunces",
+  },
 ];
 
 export const effects = [
@@ -85,6 +103,21 @@ export const fonts = [
   { id: "pixelify", name: "Pixelify Sans", family: "Pixelify Sans", adjust: 0.453, note: "Chunky pixels, 8-bit style." },
   { id: "chakra", name: "Chakra Petch", family: "Chakra Petch", adjust: 0.529, note: "Squared-off, sci-fi HUD." },
 ] as const;
+
+/**
+ * The look after picking a theme: its own font and effects, or the defaults when it has none. A font another
+ * theme brought along goes back to the default; one the person picked themselves stays. (Builder 2026-10-10:
+ * themes should look the part without a separate "Use them" step.)
+ */
+export function lookForTheme(id: string, look: Look): Look {
+  const theme = themes.find((t) => t.id === id) ?? themes[0];
+  const themeFonts = new Set(themes.map((t) => t.font).filter(Boolean));
+  const font = theme.font ?? (themeFonts.has(look.font) ? duwopConfig.defaultLook.font : look.font);
+  return { ...look, theme: theme.id, font, effects: theme.effects ?? duwopConfig.defaultLook.effects };
+}
+
+const googleFont = (family: string) =>
+  `https://fonts.googleapis.com/css2?family=${encodeURIComponent(family)}:wght@400;500;600;700&display=swap`;
 
 /** A rolled palette: neutral hue and chroma, accent hue, second-glow hue. */
 export type Palette = { nh: number; nc: number; ph: number; gh: number };
@@ -137,8 +170,10 @@ export function applyLook(look: Look): Look {
   const html = document.documentElement;
   const theme = themes.find((t) => t.id === look.theme) ?? themes[0];
   const font = fonts.find((f) => f.id === look.font) ?? fonts[0];
-  const url = font.family
-    ? `https://fonts.googleapis.com/css2?family=${encodeURIComponent(font.family)}:wght@400;500;600;700&display=swap`
+  const url = font.family ? googleFont(font.family) : "";
+  // Press Start 2P has only a regular weight; asking for others fails the whole request.
+  const displayUrl = theme.display
+    ? `https://fonts.googleapis.com/css2?family=${encodeURIComponent(theme.display)}&display=swap`
     : "";
   if (theme.id === "custom" && !look.palette) look = { ...look, palette: rollPalette() };
   const vars = theme.id === "custom" && look.palette ? paletteVars(look.palette) : {};
@@ -152,13 +187,25 @@ export function applyLook(look: Look): Look {
   else html.style.removeProperty("--app-font-adjust");
   for (const v of PALETTE_VARS) html.style.removeProperty(v);
   for (const [k, v] of Object.entries(vars)) html.style.setProperty(k, v);
+  if (theme.display) html.style.setProperty("--app-display", `"${theme.display}"`);
+  else html.style.removeProperty("--app-display");
   loadFont(url);
+  loadFont(displayUrl, "app-display-font");
 
   try {
     // The boot script reads this copy, so it carries everything needed to paint without this module.
     localStorage.setItem(
       duwopConfig.storageKey,
-      JSON.stringify({ ...look, dark: theme.dark, family: font.family, adjust: font.adjust, url, vars }),
+      JSON.stringify({
+        ...look,
+        dark: theme.dark,
+        family: font.family,
+        adjust: font.adjust,
+        url,
+        vars,
+        display: theme.display ?? "",
+        displayUrl,
+      }),
     );
   } catch {
     // Private windows can refuse storage; the look still applies for this visit.
@@ -167,12 +214,12 @@ export function applyLook(look: Look): Look {
   return look;
 }
 
-function loadFont(url: string) {
-  let link = document.getElementById("app-font") as HTMLLinkElement | null;
+function loadFont(url: string, id = "app-font") {
+  let link = document.getElementById(id) as HTMLLinkElement | null;
   if (!url) return link?.remove();
   if (!link) {
     link = document.createElement("link");
-    link.id = "app-font";
+    link.id = id;
     link.rel = "stylesheet";
     document.head.append(link);
   }

@@ -164,7 +164,7 @@ body {
   --glow2: oklch(0.65 0.26 340);
 }
 
-/* Cyberpunk: hazard yellow on near-black teal, cyan second glow, hard corners, cut-corner cards with a faint yellow outline. */
+/* Cyberpunk: hazard yellow on near-black teal, cyan second glow, hard corners. Its look is under Personalities. */
 .dark[data-theme="cyberpunk"] {
   --nh: 200;
   --nc: 0.03;
@@ -172,13 +172,7 @@ body {
   --glow2: oklch(0.82 0.15 195);
   --radius: 0px;
 }
-[data-theme="cyberpunk"] [data-slot="card"] {
-  clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%);
-  border-color: color-mix(in oklch, var(--primary) 35%, transparent);
-}
-
-/* 8-bit: console-cartridge colours, square corners, chunky borders and hard pixel drop-shadows.
-   Pairs with the Pixelify font. */
+/* 8-bit: console-cartridge colours, square corners. Pairs with the Pixelify font; its look is under Personalities. */
 .dark[data-theme="8bit"] {
   --nh: 265;
   --nc: 0.05;
@@ -188,20 +182,7 @@ body {
   --input: oklch(1 0 0 / 30%);
   --radius: 0px;
 }
-[data-theme="8bit"] :is([data-slot="card"], [data-slot="input"], [data-slot="textarea"]) {
-  border-width: 3px;
-  box-shadow: 4px 4px 0 0 oklch(0 0 0 / 55%);
-}
-[data-theme="8bit"] [data-slot="button"] {
-  box-shadow: 3px 3px 0 0 oklch(0 0 0 / 55%);
-}
-[data-theme="8bit"] [data-slot="button"]:active {
-  translate: 3px 3px;
-  box-shadow: none;
-}
-
-/* ASCII: green phosphor terminal. Monospace, square corners, dashed borders like text-art boxes.
-   Pairs with the JetBrains Mono font. */
+/* ASCII: green phosphor terminal, square corners. Pairs with JetBrains Mono; its look is under Personalities. */
 .dark[data-theme="ascii"] {
   --nh: 150;
   --nc: 0.02;
@@ -210,13 +191,6 @@ body {
   --border: oklch(0.85 0.2 145 / 30%);
   --radius: 0px;
 }
-[data-theme="ascii"] {
-  font-variant-ligatures: none;
-}
-[data-theme="ascii"] :is([data-slot="card"], [data-slot="input"], [data-slot="textarea"], [data-slot="separator"]) {
-  border-style: dashed;
-}
-
 /* Custom: the random palette roller (lib/theme.ts rollPalette) sets --nh, --nc, --primary and --glow2
    inline on <html>, which outranks these. These are only the look before the first roll. */
 .dark[data-theme="custom"] {
@@ -257,6 +231,226 @@ body {
   --radius: 1rem;
 }
 
+/* ---- Personalities (2026-10-10): each theme looks the part, not just its colours ----
+   Builder: "we shouldn't dim it down, we should do more the opposite"; 8-bit and ASCII should look like pixel art
+   and a text terminal. Apps opt elements in with classes they already use:
+     .fx-title   a page title (gets the theme's title treatment and display font)
+     .fx-lift    a card or poster (frames, cut corners)
+     .fx-meter   a thin progress bar's track, its fill the only child (shadcn's Progress is picked up by data-slot)
+   Everything here is static (no per-frame repaint) except the ASCII cursor blink, which only changes opacity. */
+
+/* Titles: the theme's display font, and a gradient from the main colour to the second glow on every dark theme.
+   Neon (an effect) takes over the colour when it's on. */
+.fx-title {
+  font-family: var(--app-display, inherit);
+}
+/* A display font has its own proportions: the body font's size equaliser (--app-font-adjust) would shrink it. */
+:is([data-theme="8bit"], [data-theme="cyberpunk"], [data-theme="linen"]) .fx-title {
+  font-size-adjust: none;
+}
+.dark[data-theme]:not([data-theme="mono"]):not([data-fx~="neon"]) .fx-title {
+  background: linear-gradient(100deg, var(--primary) 25%, var(--glow2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Colour themes: a hairline of the theme's colour on cards, so surfaces carry it too. */
+.dark[data-theme] [data-slot="card"] {
+  border-color: color-mix(in oklch, var(--primary) 22%, var(--border));
+}
+
+/* Trove: a treasure-gold title, light catching the top edge. */
+.dark[data-theme="trove"]:not([data-fx~="neon"]) .fx-title {
+  background: linear-gradient(180deg, oklch(0.95 0.08 95) 0%, var(--primary) 52%, oklch(0.62 0.13 65) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  filter: drop-shadow(0 1px 0 oklch(0.3 0.06 60));
+}
+
+/* Synthwave: hot pink into cyan, with a pink haze behind. */
+.dark[data-theme="synthwave"]:not([data-fx~="neon"]) .fx-title {
+  filter: drop-shadow(0 0 12px color-mix(in oklch, var(--primary) 55%, transparent));
+}
+.dark[data-theme="synthwave"] [data-slot="card"] {
+  box-shadow: 0 0 0 1px color-mix(in oklch, var(--primary) 30%, transparent),
+    0 12px 32px -18px color-mix(in oklch, var(--glow2) 70%, transparent);
+}
+
+/* Outrun: chrome-and-sunset arcade title, italic and wide; cards sit on a neon strip. */
+.dark[data-theme="outrun"] .fx-title {
+  font-size: 1.875rem;
+  font-weight: 700;
+  font-style: italic;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.dark[data-theme="outrun"]:not([data-fx~="neon"]) .fx-title {
+  background: linear-gradient(180deg, oklch(0.96 0.06 95) 0%, oklch(0.88 0.15 85) 38%, var(--primary) 55%, var(--glow2) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  filter: drop-shadow(0 2px 0 oklch(0.28 0.14 300)) drop-shadow(0 0 14px color-mix(in oklch, var(--glow2) 45%, transparent));
+}
+.dark[data-theme="outrun"] [data-slot="card"] {
+  border-bottom: 2px solid var(--glow2);
+}
+
+/* Cyberpunk: glitched, upper-case titles; hazard stripes on cards; cut corners on buttons and posters. */
+.dark[data-theme="cyberpunk"] .fx-title {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  background: none;
+  color: var(--primary);
+  text-shadow:
+    -2px 0 var(--glow2),
+    2px 0 oklch(0.65 0.26 350);
+}
+.dark[data-theme="cyberpunk"] [data-slot="card"] {
+  position: relative;
+  clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%);
+  border-color: color-mix(in oklch, var(--primary) 35%, transparent);
+}
+[data-theme="cyberpunk"] [data-slot="card"]::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 4px;
+  background: repeating-linear-gradient(-45deg, var(--primary) 0 8px, transparent 8px 16px);
+  opacity: 0.85;
+}
+[data-theme="cyberpunk"] :is([data-slot="button"], .fx-lift > *) {
+  clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+}
+[data-theme="cyberpunk"] [data-slot="button"] {
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* 8-bit: an arcade title font with a hard pixel shadow; notched pixel frames and drop shadows on cards, buttons,
+   inputs, badges and posters; posters drawn with hard pixels; segmented bars; a faint dither on the page. */
+.dark[data-theme="8bit"] .fx-title {
+  font-size: 1.25rem;
+  line-height: 1.6;
+  background: none;
+  color: var(--primary);
+  text-shadow: 2px 2px 0 color-mix(in oklch, var(--glow2) 30%, black);
+}
+[data-theme="8bit"] {
+  --px: 3px;
+  --frame: color-mix(in oklch, var(--foreground) 70%, transparent);
+}
+.dark[data-theme="8bit"]
+  :is([data-slot="card"], [data-slot="button"], [data-slot="input"], [data-slot="badge"], [data-slot="tabs-list"], .fx-lift > *) {
+  border-color: transparent;
+  border-radius: 0;
+  box-shadow:
+    0 calc(-1 * var(--px)) 0 0 var(--frame),
+    0 var(--px) 0 0 var(--frame),
+    calc(-1 * var(--px)) 0 0 0 var(--frame),
+    var(--px) 0 0 0 var(--frame),
+    calc(2 * var(--px)) calc(2 * var(--px)) 0 var(--px) oklch(0 0 0 / 60%);
+}
+[data-theme="8bit"] [data-slot="button"][data-variant="default"] {
+  --frame: color-mix(in oklch, var(--primary) 55%, black);
+}
+[data-theme="8bit"] [data-slot="button"] {
+  text-transform: uppercase;
+}
+[data-theme="8bit"] [data-slot="button"]:active {
+  translate: var(--px) var(--px);
+  box-shadow:
+    0 calc(-1 * var(--px)) 0 0 var(--frame),
+    0 var(--px) 0 0 var(--frame),
+    calc(-1 * var(--px)) 0 0 0 var(--frame),
+    var(--px) 0 0 0 var(--frame);
+}
+[data-theme="8bit"] .fx-lift img {
+  image-rendering: pixelated;
+}
+[data-theme="8bit"] :is([data-slot="progress-indicator"], .fx-meter > *),
+[data-theme="ascii"] :is([data-slot="progress-indicator"], .fx-meter > *) {
+  background: repeating-linear-gradient(90deg, var(--primary) 0 6px, transparent 6px 8px);
+}
+.dark[data-theme="8bit"] body {
+  background-image: repeating-conic-gradient(oklch(1 0 0 / 3.5%) 0 25%, transparent 0 50%);
+  background-size: 4px 4px;
+}
+
+/* ASCII: a green phosphor terminal. Double-line boxes, [ bracketed ] buttons and tags, a prompt and a blinking
+   cursor on titles, glowing text, scanlines over everything, and posters in phosphor green until you point at
+   them. */
+[data-theme="ascii"] {
+  font-variant-ligatures: none;
+}
+.dark[data-theme="ascii"] body {
+  text-shadow: 0 0 6px color-mix(in oklch, var(--primary) 30%, transparent);
+}
+.dark[data-theme="ascii"] .fx-title {
+  background: none;
+  color: var(--primary);
+}
+.dark[data-theme="ascii"] .fx-title::before {
+  content: "> ";
+  opacity: 0.6;
+}
+.dark[data-theme="ascii"] .fx-title::after {
+  content: "\2588";
+  margin-left: 0.15em;
+  font-weight: 400;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .dark[data-theme="ascii"] .fx-title::after {
+    animation: fx-blink 1.1s step-end infinite;
+  }
+}
+@keyframes fx-blink {
+  50% {
+    opacity: 0;
+  }
+}
+.dark[data-theme="ascii"] [data-slot="card"] {
+  border: 3px double color-mix(in oklch, var(--primary) 45%, transparent);
+}
+[data-theme="ascii"] :is([data-slot="input"], [data-slot="textarea"], [data-slot="separator"], [data-slot="tabs-list"]) {
+  border-style: dashed;
+}
+[data-theme="ascii"] :is([data-slot="button"]:not([data-size^="icon"]), [data-slot="badge"])::before {
+  content: "[";
+  opacity: 0.7;
+}
+[data-theme="ascii"] :is([data-slot="button"]:not([data-size^="icon"]), [data-slot="badge"])::after {
+  content: "]";
+  opacity: 0.7;
+}
+[data-theme="ascii"] .fx-lift img {
+  filter: grayscale(1) sepia(1) hue-rotate(60deg) saturate(2.2) brightness(0.9);
+  transition: filter 0.3s ease;
+}
+[data-theme="ascii"] :is(.fx-lift:hover, .group:hover .fx-lift, .group:focus-visible .fx-lift) img {
+  filter: none;
+}
+.dark[data-theme="ascii"] body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  background: repeating-linear-gradient(to bottom, transparent 0 2px, oklch(0 0 0 / 16%) 2px 3px);
+}
+
+/* Linen: a soft serif title, like a printed catalogue. */
+[data-theme="linen"]:not(.dark) .fx-title {
+  color: var(--primary);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+/* Mono: stark white titles, no gradient. */
+.dark[data-theme="mono"] .fx-title {
+  color: var(--foreground);
+  letter-spacing: 0.02em;
+}
+
 /* AMOLED: true black behind everything (pixels off on OLED screens), with surfaces just above black so
    cards still read. Works on every dark theme. */
 .dark[data-theme][data-amoled] {
@@ -272,7 +466,9 @@ body {
    .fx-lift      a card or poster that lifts and glows (Underglow) and gets a sheen (Shine)
    .fx-ambient   a <div> near the top of <body>: the backdrop for Ambient, Drifting and Horizon. Put one
                  empty <div class="fx-horizon"> inside it for Horizon (2026-10-10)
-   .fx-neon      a heading or logo that glows like a neon tube (Neon) ---- */
+   .fx-neon      a heading or logo that glows like a neon tube (Neon)
+   .fx-title     a page title: each theme's title look and display font (see Personalities)
+   .fx-meter     a thin progress bar's track (its fill the only child); shadcn Progress needs nothing ---- */
 
 /* Underglow: cards lift and glow in the theme's colour on hover. */
 [data-fx~="underglow"] .fx-lift {
