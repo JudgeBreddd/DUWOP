@@ -48,7 +48,8 @@ import { applyLook, loadLook } from "@/lib/theme"
 applyLook(loadLook()) // on startup: the saved look, or the default from duwop-config.ts
 ```
 
-Put `<div className="fx-ambient" />` near the top of the page for Ambient, Drifting and Horizon. Add
+Put `<div className="fx-ambient"><div className="fx-horizon" /></div>` near the top of the page for Ambient,
+Drifting and Horizon. Add
 `fx-lift` to cards that should glow (Underglow) or shine (Shine), and `fx-neon` to headings for Neon.
 
 Pick the default look and the allowed themes in `lib/duwop-config.ts`. To save the look somewhere other
