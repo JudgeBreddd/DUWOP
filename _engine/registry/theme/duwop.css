@@ -270,7 +270,8 @@ body {
 
 /* ---- Effects: words in data-fx. Apps opt elements in with these classes:
    .fx-lift      a card or poster that lifts and glows (Underglow) and gets a sheen (Shine)
-   .fx-ambient   one empty <div> near the top of <body>: the backdrop for Ambient, Drifting and Horizon
+   .fx-ambient   a <div> near the top of <body>: the backdrop for Ambient, Drifting and Horizon. Put one
+                 empty <div class="fx-horizon"> inside it for Horizon (2026-10-10)
    .fx-neon      a heading or logo that glows like a neon tube (Neon) ---- */
 
 /* Underglow: cards lift and glow in the theme's colour on hover. */
@@ -285,7 +286,7 @@ body {
     0 0 0 1px color-mix(in oklch, var(--glow) 50%, transparent);
 }
 
-/* The backdrop. ::before is the Ambient wash, ::after the Horizon grid. */
+/* The backdrop. ::before is the Ambient wash; the Horizon grid is the .fx-horizon child. */
 .fx-ambient {
   display: none;
   position: fixed;
@@ -320,32 +321,46 @@ body {
   }
 }
 
-/* Horizon: an 80s neon grid running to the horizon along the bottom of the page. Scrolls with Drifting. */
-[data-fx~="horizon"] .fx-ambient::after {
-  content: "";
+/* Horizon: an 80s neon grid running to the horizon along the bottom of the page. Scrolls with Drifting.
+   Markup: <div class="fx-ambient"><div class="fx-horizon"></div></div>. The child holds the tilt and the fade and
+   never changes; only its ::before (the grid) slides, by transform, so the browser moves an already-drawn layer
+   instead of repainting a page-wide glowing grid every frame (the old background-position + drop-shadow version
+   made whole pages feel sluggish, 2026-10-10). The glow is drawn into the lines rather than added by a filter. */
+.fx-horizon {
+  display: none;
+}
+[data-fx~="horizon"] .fx-horizon {
+  display: block;
   position: absolute;
   left: -50%;
   right: -50%;
   bottom: 0;
   height: 50%;
-  --line: color-mix(in oklch, var(--glow2) 85%, transparent);
-  background:
-    repeating-linear-gradient(to right, var(--line) 0 2px, transparent 2px 64px),
-    repeating-linear-gradient(to bottom, var(--line) 0 2px, transparent 2px 64px);
+  overflow: hidden;
   transform: perspective(320px) rotateX(62deg);
   transform-origin: 50% 100%;
   mask-image: linear-gradient(to top, black 15%, transparent 90%);
   opacity: 0.7;
-  filter: drop-shadow(0 0 4px var(--glow2));
+}
+[data-fx~="horizon"] .fx-horizon::before {
+  content: "";
+  position: absolute;
+  inset: -64px 0 0;
+  --line: color-mix(in oklch, var(--glow2) 85%, transparent);
+  --halo: color-mix(in oklch, var(--glow2) 25%, transparent);
+  background:
+    repeating-linear-gradient(to right, var(--halo) 0 1.5px, var(--line) 1.5px 3.5px, var(--halo) 3.5px 5px, transparent 5px 64px),
+    repeating-linear-gradient(to bottom, var(--halo) 0 1.5px, var(--line) 1.5px 3.5px, var(--halo) 3.5px 5px, transparent 5px 64px);
 }
 @media (prefers-reduced-motion: no-preference) {
-  [data-fx~="horizon"][data-fx~="motion"] .fx-ambient::after {
+  [data-fx~="horizon"][data-fx~="motion"] .fx-horizon::before {
+    will-change: transform;
     animation: fx-road 1.6s linear infinite;
   }
 }
 @keyframes fx-road {
   to {
-    background-position: 0 64px;
+    transform: translateY(64px);
   }
 }
 

@@ -106,7 +106,7 @@ every font. Use the scale above; weight carries hierarchy before size does.
 ## Elevation & Depth
 
 Surfaces step up in lightness: background, card, raised. Opt cards into effects with `fx-lift`; put one
-`<div className="fx-ambient" />` near the top of the page for the backdrop effects.
+`<div className="fx-ambient"><div className="fx-horizon" /></div>` near the top of the page for the backdrop effects.
 
 ## Shapes
 
