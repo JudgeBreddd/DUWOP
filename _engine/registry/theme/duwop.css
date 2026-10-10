@@ -377,8 +377,8 @@ body {
 }
 
 /* ASCII: a green phosphor terminal. Double-line boxes, [ bracketed ] buttons and tags, a prompt and a blinking
-   cursor on titles, glowing text, scanlines over everything, and posters in phosphor green until you point at
-   them. */
+   cursor on titles, glowing text and scanlines over everything. Posters keep their own colours (builder 2026-10-10: green posters
+   were too much). */
 [data-theme="ascii"] {
   font-variant-ligatures: none;
 }
@@ -421,13 +421,6 @@ body {
 [data-theme="ascii"] :is([data-slot="button"]:not([data-size^="icon"]), [data-slot="badge"])::after {
   content: "]";
   opacity: 0.7;
-}
-[data-theme="ascii"] .fx-lift img {
-  filter: grayscale(1) sepia(1) hue-rotate(60deg) saturate(2.2) brightness(0.9);
-  transition: filter 0.3s ease;
-}
-[data-theme="ascii"] :is(.fx-lift:hover, .group:hover .fx-lift, .group:focus-visible .fx-lift) img {
-  filter: none;
 }
 .dark[data-theme="ascii"] body::after {
   content: "";
