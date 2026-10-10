@@ -80,8 +80,8 @@ components:
 
 This app wears the DUWOP look. Colours are CSS variables that change with the theme the user picks
 (Settings → Appearance), so design against the token names above, never raw colours. The default theme
-for new visitors is set in `src/lib/duwop-config.ts` (Trove, gold on deep ink, unless this app says
-otherwise). <Name this app's north star in one line, e.g. "The Treasure Vault".>
+for new visitors is set in `src/lib/duwop-config.ts` (Duskwood, gold on deep ink, unless this app says
+otherwise). <Name this app's north star in one line, e.g. "A quiet reading room".>
 
 ## Colors
 
@@ -121,7 +121,7 @@ shadcn/ui components, themed by DUWOP. <List this app's signature components her
 
 ### Do:
 
-- Check new screens in at least Trove, Daylight and 8-bit: dark, light and square-cornered.
+- Check new screens in at least Duskwood, Daylight and 8-bit: dark, light and square-cornered.
 - Keep motion behind the effects switches, so reduced motion turns it off.
 
 ### Don't:

@@ -19,8 +19,8 @@ export type Theme = {
 };
 
 export const themes: Theme[] = [
-  { id: "trove", name: "Trove", note: "Gold on deep ink. The original.", dark: true },
-  { id: "midnight", name: "Midnight", note: "Electric blue, late-night cinema.", dark: true },
+  { id: "duskwood", name: "Duskwood", note: "Gold on deep ink. The house look.", dark: true },
+  { id: "midnight", name: "Midnight", note: "Electric blue, after dark.", dark: true },
   { id: "ember", name: "Ember", note: "Warm orange glow.", dark: true },
   { id: "forest", name: "Forest", note: "Deep green and emerald.", dark: true },
   { id: "synthwave", name: "Synthwave", note: "Neon pink and cyan.", dark: true },
@@ -33,7 +33,7 @@ export const themes: Theme[] = [
     note: "80s arcade racer: sunset orange on violet.",
     dark: true,
     font: "chakra",
-    effects: ["ambient", "horizon", "motion"],
+    effects: ["underglow", "ambient", "horizon", "motion"],
   },
   {
     id: "cyberpunk",
@@ -59,7 +59,7 @@ export const themes: Theme[] = [
     note: "Green phosphor terminal: text boxes, [ buttons ], scanlines.",
     dark: true,
     font: "jetbrains",
-    effects: ["neon"],
+    effects: ["underglow", "neon"],
   },
   { id: "custom", name: "Roll the dice", note: "A random palette. Roll again for another.", dark: true },
   { id: "daylight", name: "Daylight", note: "Light mode.", dark: false },
@@ -81,6 +81,9 @@ export const effects = [
   { id: "horizon", name: "Horizon", note: "An 80s neon grid running to the horizon." },
   { id: "neon", name: "Neon", note: "Headings glow like neon tubes, with the odd flicker." },
 ] as const;
+
+/** The core effects plus this app's opt-in add-ons (extraEffects in duwop-config), for the picker. */
+export const allEffects = [...effects, ...(duwopConfig.extraEffects ?? [])];
 
 /** Fonts from Google Fonts, loaded only when picked. Inter is the default; System needs no download. */
 export const fonts = [
@@ -113,7 +116,9 @@ export function lookForTheme(id: string, look: Look): Look {
   const theme = themes.find((t) => t.id === id) ?? themes[0];
   const themeFonts = new Set(themes.map((t) => t.font).filter(Boolean));
   const font = theme.font ?? (themeFonts.has(look.font) ? duwopConfig.defaultLook.font : look.font);
-  return { ...look, theme: theme.id, font, effects: theme.effects ?? duwopConfig.defaultLook.effects };
+  // Add-on effects (popcorn and the like) aren't part of any theme's look, so switching themes keeps them.
+  const addOns = look.effects.filter((e) => duwopConfig.extraEffects?.some((x) => x.id === e));
+  return { ...look, theme: theme.id, font, effects: [...(theme.effects ?? duwopConfig.defaultLook.effects), ...addOns] };
 }
 
 const googleFont = (family: string) =>
@@ -145,6 +150,11 @@ export const paletteVars = (p: Palette): Record<string, string> => ({
 });
 const PALETTE_VARS = ["--nh", "--nc", "--primary", "--glow2"];
 
+/** Theme ids that were renamed, so looks saved under the old id keep working. duwop-boot.js has its own copy. */
+export const renamedThemes: Record<string, string> = { trove: "duskwood" };
+const current = (look: Look): Look =>
+  renamedThemes[look.theme] ? { ...look, theme: renamedThemes[look.theme] } : look;
+
 const listeners = new Set<(look: Look) => void>();
 
 /** Runs fn every time applyLook runs. Returns a function that unsubscribes. */
@@ -157,7 +167,7 @@ export function onLookChange(fn: (look: Look) => void) {
 export function loadLook(): Look {
   try {
     const saved = JSON.parse(localStorage.getItem(duwopConfig.storageKey) || "null");
-    if (saved?.theme && Array.isArray(saved.effects)) return saved;
+    if (saved?.theme && Array.isArray(saved.effects)) return current(saved);
   } catch {
     // Storage blocked or bad JSON: fall through to the default.
   }
@@ -167,6 +177,7 @@ export function loadLook(): Look {
 /** Puts a look on the page now, remembers it for the next load, and tells onLookChange subscribers.
  *  Returns the look as applied (the "custom" theme gains a palette if it had none). */
 export function applyLook(look: Look): Look {
+  look = current(look);
   const html = document.documentElement;
   const theme = themes.find((t) => t.id === look.theme) ?? themes[0];
   const font = fonts.find((f) => f.id === look.font) ?? fonts[0];
