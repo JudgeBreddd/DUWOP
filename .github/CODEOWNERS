@@ -1,0 +1,4 @@
+# Who must approve a change. Kaize owns everything by default.
+# A contributor's own pack can name them too, once they have access, so changes to it need their OK as well:
+# /_engine/registry/<pack>/ @itsdankai @<their-username>
+* @itsdankai

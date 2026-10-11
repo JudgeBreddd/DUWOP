@@ -80,7 +80,10 @@ entry in `themes` in `theme.ts`. A new **effect** follows `popcorn`: its own ite
 - One PR per round of work. Commit the rebuilt `public/r/` with the source change.
 - The PR says what the item is, how to turn it on, what you tested, and any borrowed references with
   their licences. Kaize reviews and merges.
-- Don't edit another person's open PR or rename existing theme ids: apps have saved looks that use them.
+- `main` is protected: every PR needs Kaize's approval (`.github/CODEOWNERS`), and pushing a new commit
+  after approval needs approval again. Each PR is audited against this file before it's approved.
+- Don't edit another person's open PR, and don't remove or rename anyone else's pack or theme ids: apps
+  have saved looks that use them. Propose that in an issue first.
 
 ## Updating an app later
 
