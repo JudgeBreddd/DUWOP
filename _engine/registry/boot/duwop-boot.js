@@ -14,7 +14,14 @@
     // Renamed themes (lib/theme.ts renamedThemes): old saved ids still paint the right theme.
     html.dataset.theme = { trove: "duskwood" }[look.theme] || look.theme;
     html.dataset.fx = (look.effects || []).join(" ");
-    html.classList.toggle("dark", look.dark !== false);
+    // Themes with both looks follow the saved mode; "system" asks the device (lib/theme.ts isDark does the same).
+    const mode = look.mode || "dark";
+    const dark = !look.both
+      ? look.dark !== false
+      : mode === "system"
+        ? matchMedia("(prefers-color-scheme: dark)").matches
+        : mode === "dark";
+    html.classList.toggle("dark", dark);
     html.toggleAttribute("data-amoled", !!look.amoled);
     if (look.family !== undefined) html.style.setProperty("--app-font", look.family ? `"${look.family}"` : "system-ui");
     if (look.adjust) html.style.setProperty("--app-font-adjust", String(look.adjust));

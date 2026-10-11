@@ -92,6 +92,46 @@
       ]
     },
     {
+      "name": "gods",
+      "type": "registry:item",
+      "title": "Glamours of the Gods",
+      "description": "Add-on theme pack for websites: Olympus, Apollo, Athena, Poseidon, Hades and Ra, each with a light and a dark look, gilded Cinzel titles. Add extraThemes: gods in duwop-config.",
+      "registryDependencies": [
+        "@duwop/theme"
+      ],
+      "files": [
+        {
+          "path": "_engine/registry/gods/gods.css",
+          "type": "registry:lib"
+        },
+        {
+          "path": "_engine/registry/gods/gods.ts",
+          "type": "registry:lib"
+        }
+      ],
+      "css": {
+        "@import \"@/lib/gods.css\"": {}
+      }
+    },
+    {
+      "name": "mode",
+      "type": "registry:component",
+      "title": "DUWOP mode switch",
+      "description": "Light / dark / system switch for sites that fix their own look (no theme picker). System follows the device live.",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "@duwop/theme"
+      ],
+      "files": [
+        {
+          "path": "_engine/registry/mode/mode-toggle.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
       "name": "design-docs",
       "type": "registry:item",
       "title": "DUWOP design docs",
