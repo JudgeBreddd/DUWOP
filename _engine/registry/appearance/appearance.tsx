@@ -9,9 +9,11 @@ import { Card } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import {
   allowedThemes,
+  allThemes,
   applyLook,
   allEffects,
   fonts,
+  isDark,
   type Look,
   loadLook,
   lookForTheme,
@@ -32,7 +34,7 @@ export function Appearance({
 }) {
   const [look, setLook] = useState<Look>(loadLook);
   const themes = allowedThemes();
-  const theme = themes.find((t) => t.id === look.theme);
+  const theme = allThemes.find((t) => t.id === look.theme);
   const change = (patch: Partial<Look>) => {
     const next = applyLook({ ...look, ...patch });
     setLook(next);
@@ -64,7 +66,7 @@ export function Appearance({
               data-amoled={look.amoled ? "" : undefined}
               style={t.id === "custom" && look.palette ? (paletteVars(look.palette) as CSSProperties) : undefined}
               className={cn(
-                t.dark && "dark",
+                isDark(t, look.mode) && "dark",
                 "rounded-xl border bg-background p-3 text-left text-foreground transition-shadow",
                 look.theme === t.id ? "ring-2 ring-primary" : "hover:ring-1 hover:ring-primary/50",
               )}

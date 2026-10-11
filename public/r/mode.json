@@ -1,0 +1,20 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "mode",
+  "title": "DUWOP mode switch",
+  "description": "Light / dark / system switch for sites that fix their own look (no theme picker). System follows the device live.",
+  "dependencies": [
+    "lucide-react"
+  ],
+  "registryDependencies": [
+    "@duwop/theme"
+  ],
+  "files": [
+    {
+      "path": "_engine/registry/mode/mode-toggle.tsx",
+      "content": "// DUWOP mode switch (@duwop/mode): light / dark / system for sites that set their own look and don't offer the\n// full Appearance picker (brand sites, stores). Changes only the mode; the theme and effects stay the site's.\n// Works with themes that have both looks (dark: \"both\", e.g. @duwop/gods). System follows the device live.\n\nimport { Monitor, Moon, Sun } from \"lucide-react\";\nimport { useEffect, useState } from \"react\";\nimport { applyLook, loadLook, type Mode } from \"@/lib/theme\";\nimport { cn } from \"@/lib/utils\";\n\nconst modes: { id: Mode; label: string; Icon: typeof Sun }[] = [\n  { id: \"light\", label: \"Light\", Icon: Sun },\n  { id: \"dark\", label: \"Dark\", Icon: Moon },\n  { id: \"system\", label: \"System\", Icon: Monitor },\n];\n\nexport function ModeToggle({ className }: { className?: string }) {\n  // Read after mount: the server render can't know the visitor's choice (the boot script already painted it).\n  const [mode, setMode] = useState<Mode | null>(null);\n  useEffect(() => setMode(loadLook().mode ?? \"dark\"), []);\n\n  return (\n    <div role=\"radiogroup\" aria-label=\"Colour mode\" className={cn(\"inline-flex rounded-full border border-border p-0.5\", className)}>\n      {modes.map(({ id, label, Icon }) => (\n        <button\n          key={id}\n          type=\"button\"\n          role=\"radio\"\n          aria-checked={mode === id}\n          aria-label={label}\n          title={label}\n          onClick={() => {\n            applyLook({ ...loadLook(), mode: id });\n            setMode(id);\n          }}\n          className={cn(\n            \"grid size-7 place-items-center rounded-full text-muted-foreground transition-colors hover:text-foreground\",\n            mode === id && \"bg-primary text-primary-foreground hover:text-primary-foreground\",\n          )}\n        >\n          <Icon className=\"size-3.5\" />\n        </button>\n      ))}\n    </div>\n  );\n}\n",
+      "type": "registry:component"
+    }
+  ],
+  "type": "registry:component"
+}

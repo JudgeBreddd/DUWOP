@@ -9,7 +9,8 @@ export type Theme = {
   id: string;
   name: string;
   note: string;
-  dark: boolean;
+  /** true / false for a fixed look; "both" for themes with a light and a dark look (the mode picks). */
+  dark: boolean | "both";
   /** Font id this theme looks best with. A picker can offer it; applyLook never forces it. */
   font?: string;
   /** Effect ids this theme looks best with. */
@@ -85,6 +86,9 @@ export const effects = [
 /** The core effects plus this app's opt-in add-ons (extraEffects in duwop-config), for the picker. */
 export const allEffects = [...effects, ...(duwopConfig.extraEffects ?? [])];
 
+/** The core themes plus this app's add-on themes (extraThemes in duwop-config, e.g. @duwop/gods). */
+export const allThemes: Theme[] = [...themes, ...(duwopConfig.extraThemes ?? [])];
+
 /** Fonts from Google Fonts, loaded only when picked. Inter is the default; System needs no download. */
 export const fonts = [
   // adjust: a font-size-adjust value that gives each font about the same text width as Inter, so switching
@@ -113,7 +117,7 @@ export const fonts = [
  * themes should look the part without a separate "Use them" step.)
  */
 export function lookForTheme(id: string, look: Look): Look {
-  const theme = themes.find((t) => t.id === id) ?? themes[0];
+  const theme = allThemes.find((t) => t.id === id) ?? themes[0];
   const themeFonts = new Set(themes.map((t) => t.font).filter(Boolean));
   const font = theme.font ?? (themeFonts.has(look.font) ? duwopConfig.defaultLook.font : look.font);
   // Add-on effects (popcorn and the like) aren't part of any theme's look, so switching themes keeps them.
@@ -127,11 +131,20 @@ const googleFont = (family: string) =>
 /** A rolled palette: neutral hue and chroma, accent hue, second-glow hue. */
 export type Palette = { nh: number; nc: number; ph: number; gh: number };
 
-export type Look = { theme: string; effects: string[]; amoled: boolean; font: string; palette?: Palette };
+/** light / dark / system, for themes with both looks. System follows the device and updates live. */
+export type Mode = "light" | "dark" | "system";
+
+export type Look = { theme: string; effects: string[]; amoled: boolean; font: string; palette?: Palette; mode?: Mode };
+
+const prefersDark = () => typeof matchMedia === "function" && matchMedia("(prefers-color-scheme: dark)").matches;
+
+/** Whether a theme shows dark under a mode. Fixed themes ignore the mode; "both" themes follow it (default: dark). */
+export const isDark = (theme: Theme, mode: Mode = "dark") =>
+  theme.dark !== "both" ? theme.dark : mode === "system" ? prefersDark() : mode === "dark";
 
 /** The themes this app lets users pick (lib/duwop-config.ts). */
 export const allowedThemes = () =>
-  duwopConfig.themes === "all" ? themes : themes.filter((t) => duwopConfig.themes.includes(t.id));
+  duwopConfig.themes === "all" ? allThemes : allThemes.filter((t) => duwopConfig.themes.includes(t.id));
 
 /** A random, readable palette for the "custom" theme: any neutral hue, an accent on the opposite side of
  *  the wheel, lightness and chroma kept in the range every other dark theme uses. */
@@ -157,6 +170,13 @@ const current = (look: Look): Look =>
 
 const listeners = new Set<(look: Look) => void>();
 
+// The look on the page now. When it's in system mode, a change on the device (sunset, a settings toggle) re-applies it.
+let shown: Look | null = null;
+if (typeof matchMedia === "function")
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
+    if (shown?.mode === "system") applyLook(shown);
+  });
+
 /** Runs fn every time applyLook runs. Returns a function that unsubscribes. */
 export function onLookChange(fn: (look: Look) => void) {
   listeners.add(fn);
@@ -179,11 +199,13 @@ export function loadLook(): Look {
 export function applyLook(look: Look): Look {
   look = current(look);
   const html = document.documentElement;
-  const theme = themes.find((t) => t.id === look.theme) ?? themes[0];
+  const theme = allThemes.find((t) => t.id === look.theme) ?? themes[0];
   const font = fonts.find((f) => f.id === look.font) ?? fonts[0];
-  const url = font.family ? googleFont(font.family) : "";
+  // loadFonts: false = the app hosts its fonts itself (a strict CSP, no Google calls); only the names are set.
+  const google = duwopConfig.loadFonts !== false;
+  const url = google && font.family ? googleFont(font.family) : "";
   // Press Start 2P has only a regular weight; asking for others fails the whole request.
-  const displayUrl = theme.display
+  const displayUrl = google && theme.display
     ? `https://fonts.googleapis.com/css2?family=${encodeURIComponent(theme.display)}&display=swap`
     : "";
   if (theme.id === "custom" && !look.palette) look = { ...look, palette: rollPalette() };
@@ -191,7 +213,9 @@ export function applyLook(look: Look): Look {
 
   html.dataset.theme = theme.id;
   html.dataset.fx = look.effects.join(" ");
-  html.classList.toggle("dark", theme.dark);
+  const dark = isDark(theme, look.mode);
+  shown = look;
+  html.classList.toggle("dark", dark);
   html.toggleAttribute("data-amoled", look.amoled);
   html.style.setProperty("--app-font", font.family ? `"${font.family}"` : "system-ui");
   if (font.adjust) html.style.setProperty("--app-font-adjust", String(font.adjust));
@@ -209,7 +233,8 @@ export function applyLook(look: Look): Look {
       duwopConfig.storageKey,
       JSON.stringify({
         ...look,
-        dark: theme.dark,
+        dark,
+        both: theme.dark === "both",
         family: font.family,
         adjust: font.adjust,
         url,

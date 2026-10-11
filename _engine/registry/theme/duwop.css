@@ -463,8 +463,13 @@ body {
    no theme glows all the time). 8-bit's frame is itself a box-shadow, so there the frame lights up instead. */
 [data-fx~="underglow"] :is(.fx-lift, [data-slot="card"]) {
   transition:
-    transform 0.2s ease,
+    translate 0.2s ease,
     box-shadow 0.25s ease;
+}
+/* The lift itself lives here (2026-10-10), so every app gets it, not only ones that add their own hover class.
+   Image tiles rise; big cards only glow, since a whole settings panel jumping would be too much. */
+[data-fx~="underglow"] :is(.fx-lift:hover, .group:hover .fx-lift, .fx-lift:focus-visible, .group:focus-visible .fx-lift) {
+  translate: 0 -4px;
 }
 [data-fx~="underglow"]:not([data-theme="8bit"])
   :is(.fx-lift:hover, .group:hover .fx-lift, .fx-lift:focus-visible, .group:focus-visible .fx-lift, [data-slot="card"]:hover) {
@@ -608,8 +613,10 @@ body {
 /* Anyone who asked their system for less motion gets none of it. The animations above only run under
    no-preference; this turns off the hover movement too. */
 @media (prefers-reduced-motion: reduce) {
-  [data-fx] .fx-lift {
+  [data-fx] :is(.fx-lift, [data-slot="card"]) {
     transition: none;
+    /* biome-ignore lint/complexity/noImportantStyles: must also stop an app's own hover lift (e.g. a Tailwind group-hover translate) for reduced motion */
+    translate: none !important;
   }
   [data-fx] .fx-lift::after {
     display: none;
