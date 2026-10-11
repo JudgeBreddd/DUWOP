@@ -117,7 +117,7 @@
       "name": "command-center",
       "type": "registry:item",
       "title": "Command Center",
-      "description": "Add-on theme pack: Redline (true black, red glow), Tokyo Night and Event Horizon (true black, steel blue). Dark-only. Add extraThemes: commandCenter in duwop-config.",
+      "description": "Add-on theme pack: Redline (true black, red glow), Night Drive (blue on night indigo) and Event Horizon (near-black, steel blue). Dark-only. Add extraThemes: commandCenter in duwop-config.",
       "registryDependencies": [
         "@duwop/theme"
       ],

@@ -13,9 +13,9 @@ export const commandCenter: Theme[] = [
     effects: ["underglow", "ambient"],
   },
   {
-    id: "tokyo-night",
-    name: "Tokyo Night",
-    note: "The Tokyo Night editor palette: blue on night indigo.",
+    id: "night-drive",
+    name: "Night Drive",
+    note: "Blue on night indigo (the Tokyo Night palette by enkia, MIT).",
     dark: true,
     font: "jetbrains",
     effects: ["underglow"],
@@ -23,7 +23,7 @@ export const commandCenter: Theme[] = [
   {
     id: "event-horizon",
     name: "Event Horizon",
-    note: "True black and steel blue. Glows only when you point at it.",
+    note: "Near-black and steel blue. Glows only when you point at it.",
     dark: true,
     font: "spacegrotesk",
     effects: ["underglow"],

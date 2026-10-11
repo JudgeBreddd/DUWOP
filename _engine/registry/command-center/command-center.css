@@ -1,22 +1,23 @@
 /* Command Center (@duwop/command-center): an add-on theme pack carrying three looks from Tyler's design suite,
    converted exactly from its hex tokens (tyler-design.css, 2026-10-11) to oklch.
      Redline        true black, gunmetal surfaces, signature red glow, JetBrains Mono
-     Tokyo Night    the enkia Tokyo Night editor palette: blue on night indigo
-     Event Horizon  true black, steel blue, Space Grotesk; glow only on interaction
+     Night Drive    blue on night indigo (the Tokyo Night palette by enkia, MIT licence)
+     Event Horizon  near-black, steel blue, Space Grotesk; glow only on interaction
    All three are dark-only. Each theme has three blocks:
      1. --nh / --nc / --primary / --glow2, so the core shared rules still build a sane theme (and AMOLED works).
-     2. .dark.dark[...]: tokens that stay put with or without AMOLED. The doubled .dark is on purpose: it
-        outranks the core shared rule (.dark[data-theme]:not(...)) whichever CSS file loads first.
-     3. .dark.dark[...]:not([data-amoled]): the exact surfaces, which AMOLED replaces with true black. */
+     2. .dark.dark.dark[...]: tokens that stay put with or without AMOLED. The tripled .dark is on purpose:
+        four parts outrank the core shared rule (.dark[data-theme]:not(...), three parts) whichever CSS file
+        loads first.
+     3. .dark.dark[...]:not([data-amoled]): the exact surfaces (four parts), which AMOLED replaces with true black. */
 
 /* ---- Redline ---- */
 .dark[data-theme="redline"] {
   --nh: 268;
   --nc: 0.01;
   --primary: oklch(0.601 0.175 24);
-  --glow2: oklch(0.432 0.139 24);
+  --glow2: oklch(0.52 0.139 24);
 }
-.dark.dark[data-theme="redline"] {
+.dark.dark.dark[data-theme="redline"] {
   --foreground: oklch(0.946 0.003 265);
   --card-foreground: oklch(0.946 0.003 265);
   --popover-foreground: oklch(0.946 0.003 265);
@@ -40,14 +41,14 @@
   --accent: oklch(0.218 0.012 271);
 }
 
-/* ---- Tokyo Night ---- */
-.dark[data-theme="tokyo-night"] {
+/* ---- Night Drive: Tokyo Night palette by enkia (github.com/enkia/tokyo-night-vscode-theme, MIT) ---- */
+.dark[data-theme="night-drive"] {
   --nh: 278;
   --nc: 0.025;
   --primary: oklch(0.719 0.132 264);
   --glow2: oklch(0.82 0.105 236);
 }
-.dark.dark[data-theme="tokyo-night"] {
+.dark.dark.dark[data-theme="night-drive"] {
   --foreground: oklch(0.846 0.061 275);
   --card-foreground: oklch(0.846 0.061 275);
   --popover-foreground: oklch(0.846 0.061 275);
@@ -61,7 +62,7 @@
   --ring: oklch(0.719 0.132 264);
   --radius: 0.75rem;
 }
-.dark.dark[data-theme="tokyo-night"]:not([data-amoled]) {
+.dark.dark[data-theme="night-drive"]:not([data-amoled]) {
   --background: oklch(0.226 0.021 280);
   --card: oklch(0.204 0.016 285);
   --popover: oklch(0.204 0.016 285);
@@ -70,20 +71,20 @@
   --accent: oklch(0.306 0.037 273);
 }
 
-/* ---- Event Horizon: primary is the gunmetal panel, blue is the ring and the glow ---- */
+/* ---- Event Horizon: steel blue is the primary, ring and glow; the gunmetal panel is secondary / muted ---- */
 .dark[data-theme="event-horizon"] {
   --nh: 253;
   --nc: 0.014;
-  --primary: oklch(0.22 0.012 254);
+  --primary: oklch(0.608 0.095 243);
   --glow2: oklch(0.586 0.132 278);
 }
-.dark.dark[data-theme="event-horizon"] {
+.dark.dark.dark[data-theme="event-horizon"] {
   --foreground: oklch(0.943 0.011 244);
   --card-foreground: oklch(0.943 0.011 244);
   --popover-foreground: oklch(0.943 0.011 244);
   --secondary-foreground: oklch(0.943 0.011 244);
   --accent-foreground: oklch(0.943 0.011 244);
-  --primary-foreground: oklch(0.943 0.011 244);
+  --primary-foreground: oklch(0.122 0.006 262);
   --muted-foreground: oklch(0.724 0.021 253);
   --destructive: oklch(0.634 0.116 13);
   --border: oklch(0.311 0.022 259);
