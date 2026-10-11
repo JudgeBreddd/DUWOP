@@ -114,6 +114,28 @@
       }
     },
     {
+      "name": "command-center",
+      "type": "registry:item",
+      "title": "Command Center",
+      "description": "Add-on theme pack: Redline (true black, red glow), Tokyo Night and Event Horizon (true black, steel blue). Dark-only. Add extraThemes: commandCenter in duwop-config.",
+      "registryDependencies": [
+        "@duwop/theme"
+      ],
+      "files": [
+        {
+          "path": "_engine/registry/command-center/command-center.css",
+          "type": "registry:lib"
+        },
+        {
+          "path": "_engine/registry/command-center/command-center.ts",
+          "type": "registry:lib"
+        }
+      ],
+      "css": {
+        "@import \"@/lib/command-center.css\"": {}
+      }
+    },
+    {
       "name": "mode",
       "type": "registry:component",
       "title": "DUWOP mode switch",
