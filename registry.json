@@ -154,6 +154,30 @@
       ]
     },
     {
+      "name": "anymouse",
+      "type": "registry:component",
+      "title": "Anymouse",
+      "description": "Anonymous idea / bug / gripe box. <Anymouse /> opens a dialog and POSTs to /api/anymouse; sendAnymouse() in lib/anymouse-server.ts posts it to the app's Discord thread (ANYMOUSE_DISCORD_WEBHOOK + ANYMOUSE_THREAD_ID).",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "button",
+        "dialog",
+        "textarea"
+      ],
+      "files": [
+        {
+          "path": "_engine/registry/anymouse/anymouse.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "_engine/registry/anymouse/anymouse-server.ts",
+          "type": "registry:lib"
+        }
+      ]
+    },
+    {
       "name": "design-docs",
       "type": "registry:item",
       "title": "DUWOP design docs",

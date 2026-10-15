@@ -1,6 +1,8 @@
 node_modules/
 _private/
 CLAUDE.md
+AGENTS.md
+AGENTS.kit.md
 plan.md
 saved-rounds.md
 origin/
