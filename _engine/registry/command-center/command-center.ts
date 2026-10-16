@@ -4,6 +4,7 @@
 import type { Theme } from "./theme";
 
 export const commandCenter: Theme[] = [
+  { id: "event-horizon-prime", name: "Event Horizon Prime", note: "Blue, amber and violet light over deep space.", dark: true, font: "spacegrotesk", effects: ["underglow", "motion", "shine"], display: "Fraunces" },
   {
     id: "redline",
     name: "Redline",
