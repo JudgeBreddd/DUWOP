@@ -55,6 +55,21 @@ Drifting and Horizon. Add
 Pick the default look and the allowed themes in `lib/duwop-config.ts`. To save the look somewhere other
 than the browser, subscribe with `onLookChange(look => ...)`.
 
+## EH Editor (dev tool)
+
+A visual editor that sits in front of your running app. Move, reword, restyle and comment on the real UI;
+the edits save as a handoff (`eh-data/<page>.handoff.md`) for Claude Code, and the chat box runs Claude to
+change the code. Needs Node 18+, no installs.
+
+```sh
+npx shadcn add @duwop/eh-editor   # tools/eh-editor/ + a Claude Code /editor skill
+node tools/eh-editor/server.mjs --proxy http://127.0.0.1:5173 --app . --port 4180 --claude
+```
+
+Open http://127.0.0.1:4180/ and press Ctrl+Shift+E. Or type `/editor` in Claude Code and it starts the dev
+server and the editor for you. Leave out `--claude` for hand editing only; with it, each chat message is one
+`claude -p` run on your plan (Sonnet; `--model opus` to change) with file tools only.
+
 ## Build
 
 ```sh

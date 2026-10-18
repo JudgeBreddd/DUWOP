@@ -194,6 +194,29 @@
           "target": "~/DESIGN.md"
         }
       ]
+    },
+    {
+      "name": "eh-editor",
+      "type": "registry:item",
+      "title": "EH Editor",
+      "description": "Dev tool: a visual editor that sits in front of your running app. Move, reword, restyle and comment on the real UI, save it as a handoff, and chat with Claude to change the code. Installs tools/eh-editor/ and a Claude Code /editor skill. Run: node tools/eh-editor/server.mjs --proxy http://127.0.0.1:5173 --app . --port 4180 --claude",
+      "files": [
+        {
+          "path": "_engine/registry/eh-editor/server.mjs",
+          "type": "registry:file",
+          "target": "~/tools/eh-editor/server.mjs"
+        },
+        {
+          "path": "_engine/registry/eh-editor/overlay/eh.js",
+          "type": "registry:file",
+          "target": "~/tools/eh-editor/overlay/eh.js"
+        },
+        {
+          "path": "_engine/registry/eh-editor/SKILL.md",
+          "type": "registry:file",
+          "target": "~/.claude/skills/editor/SKILL.md"
+        }
+      ]
     }
   ]
 }
