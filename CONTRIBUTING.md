@@ -25,6 +25,7 @@ looks, but every package must follow the rules below so it drops into any app.
 | `_engine/registry/mode/` | `mode-toggle.tsx`: light / dark / system switch |
 | `_engine/registry/popcorn/` | `popcorn.tsx`: the model for an add-on effect |
 | `_engine/registry/design-docs/` | Starter `PRODUCT.md` / `DESIGN.md` written against DUWOP token names |
+| `_engine/registry/eh-editor/` | EH Editor dev tool: `server.mjs` (proxy + injector + chat), `overlay/eh.js` (the editor, one dependency-free file), `SKILL.md` (the `/editor` skill). Copied from Tyler's design suite; change it there first |
 | `public/r/` | Build output (`npm run build`). Committed, because GitHub serves it |
 
 ## Rules
