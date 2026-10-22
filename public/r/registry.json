@@ -136,6 +136,28 @@
       }
     },
     {
+      "name": "aphrodite",
+      "type": "registry:item",
+      "title": "Aphrodite",
+      "description": "Two dark-only themes: Aphrodite Blue and Aphrodite Charcoal. Pearl serif titles, champagne details, neutral surfaces. Import aphrodite and append it to extraThemes in duwop-config; the existing Appearance picker switches and remembers both.",
+      "registryDependencies": [
+        "@duwop/theme"
+      ],
+      "files": [
+        {
+          "path": "_engine/registry/aphrodite/aphrodite.css",
+          "type": "registry:lib"
+        },
+        {
+          "path": "_engine/registry/aphrodite/aphrodite.ts",
+          "type": "registry:lib"
+        }
+      ],
+      "css": {
+        "@import \"@/lib/aphrodite.css\"": {}
+      }
+    },
+    {
       "name": "mode",
       "type": "registry:component",
       "title": "DUWOP mode switch",

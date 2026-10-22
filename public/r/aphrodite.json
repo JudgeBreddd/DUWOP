@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "aphrodite",
+  "title": "Aphrodite",
+  "description": "Two dark-only themes: Aphrodite Blue and Aphrodite Charcoal. Pearl serif titles, champagne details, neutral surfaces. Import aphrodite and append it to extraThemes in duwop-config; the existing Appearance picker switches and remembers both.",
+  "registryDependencies": [
+    "@duwop/theme"
+  ],
+  "files": [
+    {
+      "path": "_engine/registry/aphrodite/aphrodite.css",
+      "content": "/* Aphrodite: two dark-only looks. Specificity follows Command Center so core\n   neutral-generation rules cannot tint the surfaces, in either import order. */\n.dark[data-theme=\"aphrodite-blue\"] {\n  --nh: 255; --nc: .025; --primary: #bdcce8; --glow2: #dbc39e;\n}\n.dark[data-theme=\"aphrodite-charcoal\"] {\n  --nh: 85; --nc: .002; --primary: #e7aec0; --glow2: #d9bf96;\n}\n.dark.dark.dark[data-theme=\"aphrodite-blue\"] {\n  --foreground: #e8eef5; --muted-foreground: #b1c0d2;\n  --border: #3c4c62; --input: #3c4c62; --ring: #c0d6f3;\n  --success: #abd3c7; --primary-foreground: #17283e; --pearl: #edf0f7; --champagne: #dbc39e;\n  --horizon: linear-gradient(115deg, #e7eaf3, #b9cce5);\n}\n.dark.dark.dark[data-theme=\"aphrodite-charcoal\"] {\n  --foreground: #f0ebe5; --muted-foreground: #bdb8b2;\n  --border: #494641; --input: #494641; --ring: #e7aec0;\n  --success: #b1d5c3; --primary-foreground: #301b24; --pearl: #f5eade; --champagne: #d9bf96;\n  --horizon: linear-gradient(115deg, #f5d9cf, #eab5c6);\n}\n.dark.dark[data-theme=\"aphrodite-blue\"]:not([data-amoled]) {\n  --background: #101925; --card: #192536; --popover: #243348;\n  --muted: #2c3a4e; --secondary: #2c3a4e; --accent: #2c3a4e;\n  --sidebar: #101925; --sidebar-accent: #2c3a4e;\n}\n.dark.dark[data-theme=\"aphrodite-charcoal\"]:not([data-amoled]) {\n  --background: #191918; --card: #242423; --popover: #30302e;\n  --muted: #343330; --secondary: #343330; --accent: #343330;\n  --sidebar: #191918; --sidebar-accent: #343330;\n}\n.dark.dark.dark:is([data-theme=\"aphrodite-blue\"], [data-theme=\"aphrodite-charcoal\"]) {\n  --card-foreground: var(--foreground); --popover-foreground: var(--foreground);\n  --secondary-foreground: var(--foreground); --accent-foreground: var(--foreground);\n  --sidebar-foreground: var(--foreground); --sidebar-primary: var(--primary);\n  --sidebar-primary-foreground: var(--primary-foreground);\n  --sidebar-accent-foreground: var(--foreground); --sidebar-border: var(--border);\n  --sidebar-ring: var(--ring); --app-display: \"Fraunces\", Georgia, serif;\n  --radius: 1rem;\n}\n/* One extra specificity part beats core gradient titles without changing other packs. */\n.dark.dark.dark.dark:is([data-theme=\"aphrodite-blue\"], [data-theme=\"aphrodite-charcoal\"]) .fx-title {\n  font-family: var(--app-display); font-style: italic; font-weight: 400;\n  letter-spacing: -.035em; background: none; color: var(--pearl);\n  -webkit-text-fill-color: currentColor;\n}\n",
+      "type": "registry:lib"
+    },
+    {
+      "path": "_engine/registry/aphrodite/aphrodite.ts",
+      "content": "import type { Theme } from \"./theme\";\n\nexport const aphrodite: Theme[] = [\n  {\n    id: \"aphrodite-blue\",\n    name: \"Aphrodite Blue\",\n    note: \"Midnight blue, pearl and champagne.\",\n    dark: true,\n    display: \"Fraunces\",\n    effects: [],\n  },\n  {\n    id: \"aphrodite-charcoal\",\n    name: \"Aphrodite Charcoal\",\n    note: \"Warm charcoal with blush accents.\",\n    dark: true,\n    display: \"Fraunces\",\n    effects: [],\n  },\n];\n",
+      "type": "registry:lib"
+    }
+  ],
+  "css": {
+    "@import \"@/lib/aphrodite.css\"": {}
+  },
+  "type": "registry:item"
+}
