@@ -183,7 +183,7 @@
   background-repeat: no-repeat;
   background-size: 100% 1px, 100% 100%;
   background-position: top;
-  /* ponytail: blur on every surface costs GPU; drop it here first if Bredd_Rig drags */
+  /* ponytail: blur on every surface costs GPU; drop it here first if the Windows desktop drags */
   backdrop-filter: blur(16px) saturate(1.4);
   box-shadow: var(--lift);
 }
