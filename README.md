@@ -55,6 +55,44 @@ Drifting and Horizon. Add
 Pick the default look and the allowed themes in `lib/duwop-config.ts`. To save the look somewhere other
 than the browser, subscribe with `onLookChange(look => ...)`.
 
+## Aphrodite pack
+
+Two dark themes: **Aphrodite Blue** (midnight blue, pearl and champagne) and
+**Aphrodite Charcoal** (warm charcoal with blush accents). Both use italic Fraunces
+headings and neutral surfaces. Effects are off by default when selecting either theme.
+
+This fork publishes the pack at:
+
+```json
+"registries": { "@duwop": "https://raw.githubusercontent.com/JudgeBreddd/DUWOP/main/public/r/{name}.json" }
+```
+
+```sh
+npx shadcn add @duwop/aphrodite
+```
+
+Import `aphrodite` from `"./aphrodite"` in `lib/duwop-config.ts` and append it to
+`extraThemes` (retain any other packs):
+
+```ts
+extraThemes: [...aphrodite],
+```
+
+The existing `<Appearance />` picker lists both and saves the choice. If `themes` is
+an allowlist, add `aphrodite-blue` and `aphrodite-charcoal` there too. The installer
+adds `@import "@/lib/aphrodite.css"`; keep that import in the app stylesheet.
+
+For a new app that should start in blue, set its `defaultLook` to:
+
+```ts
+{ theme: "aphrodite-blue", effects: [], amoled: false, font: "inter" }
+```
+
+Keep calling `applyLook(loadLook())` so saved choices win over that default. For a
+custom switcher, pass the selected id through `lookForTheme(id, loadLook())` and then
+`applyLook(...)`. With `loadFonts: false`, host Fraunces yourself, including its italic
+face. AMOLED deliberately replaces the approved surface colors with black.
+
 ## EH Editor (dev tool)
 
 A visual editor that sits in front of your running app. Move, reword, restyle and comment on the real UI;
